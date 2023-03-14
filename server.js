@@ -26,7 +26,8 @@ app.get('/disconnect', (req, res) => {
 })
 
 app.get('/active-users', (req, res) => {
-    let information = {userCount: active_users}
+    let information = {userCount: active_users,
+                       task: createTask()};
     res.send(information);
 })
 
