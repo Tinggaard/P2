@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Grid computing done</h1>
+    <button id="join_disconnect">Connect to grid</button>
+    <h1 id="counter"></h1>
+    <h2 id="result"></h2>
+
+    <script>
+    let user_count_interval
+    document.querySelector('#join_disconnect').addEventListener("click", connect);
+    let providerID;
+
+    async function connect() {
+        const post = await fetch("http://localhost:3000/connect").then((res) => res.json());
+        user_count_interval = setInterval(get_active_user_count, 100);
+        providerID = post.newID;
+        document.querySelector('#join_disconnect').innerText = "Disconnect";
+        document.querySelector('#join_disconnect').removeEventListener("click", connect)
+        document.querySelector('#join_disconnect').addEventListener("click", disconnect)
+        
+    }
+
+    async function disconnect() {
+        clearInterval(user_count_interval);
+        const post = await fetch("http://localhost:3000/disconnect").then((res) => res.json());
+        document.querySelector('#join_disconnect').innerText = "Reconnect";
+        document.getElementById("counter").innerText = "";
+        document.querySelector('#join_disconnect').removeEventListener("click", disconnect);
+        document.querySelector('#join_disconnect').addEventListener("click", connect);
+    }
+    
+    async function get_active_user_count() {
+        const post = await fetch("http://localhost:3000/active-users").then((res) => res.json());
+        console.log(post);
+        document.querySelector("#counter").innerText = "Provider nodes: " + post.userCount;
+        document.querySelector("#result").innerText =  "Result: " + calculate(post.task);
+    }   
+
+    function calculate(task){
+        console.log(eval(parseInt(task.num1) + task.operator + parseInt(task.num2)))
+        return parseInt(task.num1) + task.operator + parseInt(task.num2);
+    }
+
+
+
+    </script>
+</body>
+</html>
