@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Chat</title>
+</head>
+<body>
+  <div id="usercount">Number of users connected: 0</div>
+  <ul id="messages"></ul>
+
+  <script>
+    // Når siden er færdig med at indlæse, køres denne funktion
+document.addEventListener('DOMContentLoaded', () => {
+  
+  // Definerer variabler og finder de relevante HTML-elementer
+  const messages = document.getElementById('messages'); 
+  const userCount = document.getElementById('usercount');
+  const ws = new WebSocket(`ws://${location.host}`); // WebSocket-forbindelse til serveren
+  
+  //kører når der modtages en besked fra serveren 
+  ws.addEventListener('message', (event) => {
+    const message = event.data;
+    // Hvis beskeden er en gyldig JSON-streng stjålet fra Brian:
+    if (isValidJSON(message)) {
+      const data = JSON.parse(message);
+      // Hvis beskeden er hvor mange der er opdateres antallet af brugere på siden
+      if (data.type === 'usercount') {
+        userCount.textContent = `Antal brugere: ${data.count}`;
+      //ellers så er det problemer, fordi det er objekter der sendes og vi har kun to
+      } else {
+        const group = data;
+        group.forEach((item) => {
+          // Opret ny li til hvert problem og tilføj det til listen med beskeder fra los servers
+          const li = document.createElement('li');
+          li.textContent = `Problem ${item.index}: ${item.problem}`;
+          messages.appendChild(li);
+        });
+      }
+      
+    //debug
+    } else {
+      const li = document.createElement('li');
+      li.textContent = message;
+      messages.appendChild(li);
+    }
+  });
+  
+  // validere, ståjlet fra Brian
+  function isValidJSON(message) {
+    try {
+      JSON.parse(message);
+      return true;
+    } catch (error) {
+      
+        //debuuuuug
+        console.error(error);
+      return false;
+    }
+  }
+
+});
+  </script>
+</body>
+</html>
