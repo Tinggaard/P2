@@ -13,3 +13,9 @@ Linting
 ```bash
 npm run lint
 ```
+
+## Server start
+
+```
+node src/index.js
+```
