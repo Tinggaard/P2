@@ -1,0 +1,28 @@
+{
+  "name": "p2",
+  "version": "0.0.1",
+  "description": "Project 2 for CS-23-DAT-2-03",
+  "main": "app.js",
+  "scripts": {
+    "lint": "eslint src/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tinggaard/P2.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Tinggaard/P2/issues"
+  },
+  "homepage": "https://github.com/Tinggaard/P2#README",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.36.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
+}
