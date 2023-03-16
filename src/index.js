@@ -55,10 +55,8 @@ wss.on('connection', (ws) => {
   const clientId = clientIdCounter++;
   console.log(`Client ${clientId} connected`);
 
-  // Send the client ID back to the client
   ws.send(`Your id is: ${clientId}`);
 
-  // Send a single problem when a client connects
   const initialProblem = getNextProblem();
   if (initialProblem) {
     ws.send(JSON.stringify([initialProblem]));
@@ -74,7 +72,6 @@ wss.on('connection', (ws) => {
           `Client ${data.clientId} solved problem ${data.problemIndex}: Answer = ${data.answer}`,
         );
 
-        // Send a new problem when a client solves one
         const newProblem = getNextProblem();
         if (newProblem) {
           ws.send(JSON.stringify([newProblem]));
@@ -83,17 +80,14 @@ wss.on('connection', (ws) => {
     }
   });
 
-  // When a client disconnects
   ws.on('close', () => {
     console.log(`Client ${clientId} disconnected`);
     clientCount--;
 
-    // Update user count
     updateUserCount();
   });
 });
 
-// har stjålet det her så fatter ikke line 89
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
