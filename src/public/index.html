@@ -10,56 +10,68 @@
   <ul id="messages"></ul>
 
   <script>
-    // Når siden er færdig med at indlæse, køres denne funktion
-document.addEventListener('DOMContentLoaded', () => {
-
-  // Definerer variabler og finder de relevante HTML-elementer
-  const messages = document.getElementById('messages'); 
-  const userCount = document.getElementById('usercount');
-  const ws = new WebSocket(`ws://${location.host}`); // WebSocket-forbindelse til serveren
-
-  //kører når der modtages en besked fra serveren 
-  ws.addEventListener('message', (event) => {
-    const message = event.data;
-    // Hvis beskeden er en gyldig JSON-streng stjålet fra Brian:
-    if (isValidJSON(message)) {
-      const data = JSON.parse(message);
-      // Hvis beskeden er hvor mange der er opdateres antallet af brugere på siden
-      if (data.type === 'usercount') {
-        userCount.textContent = `Antal brugere: ${data.count}`;
-      //ellers så er det problemer, fordi det er objekter der sendes og vi har kun to
-      } else {
-        const group = data;
-        group.forEach((item) => {
-          // Opret ny li til hvert problem og tilføj det til listen med beskeder fra los servers
-          const li = document.createElement('li');
-          li.textContent = `Problem ${item.index}: ${item.problem}`;
-          messages.appendChild(li);
-        });
+    // Calculate the result of a given expression
+    function calculate(expression) {
+      try {
+        // Evaluate the expression and return the result
+        return Function(`return ${expression}`)();
+      } catch (error) {
+        console.error(`Error calculating expression: ${expression}`, error);
+        return null;
       }
-
-    //debug
-    } else {
-      const li = document.createElement('li');
-      li.textContent = message;
-      messages.appendChild(li);
     }
-  });
 
-  // validere, ståjlet fra Brian
-  function isValidJSON(message) {
-    try {
-      JSON.parse(message);
-      return true;
-    } catch (error) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const messages = document.getElementById('messages'); 
+      const userCount = document.getElementById('usercount');
+      const ws = new WebSocket(`ws://${location.host}`);
 
-        //debuuuuug
-        console.error(error);
-      return false;
-    }
-  }
+      let clientId;
+      ws.addEventListener('message', (event) => {
+        const message = event.data;
+        if (isValidJSON(message)) {
+          const data = JSON.parse(message);
+          if (data.type === 'usercount') {
+            userCount.textContent = `Antal brugere: ${data.count}`;
+          } else {
+            const group = data;
+            group.forEach((item) => {
+              // Calculate the answer
+              const answer = calculate(item.problem);
 
-});
+              // Send the answer back to the server
+              ws.send(JSON.stringify({
+                type: 'answer',
+                clientId: clientId,
+                problemIndex: item.index,
+                answer: answer
+              }));
+
+              // Create a new li for each problem and add it to the list of messages
+              const li = document.createElement('li');
+              li.textContent = `Problem ${item.index}: ${item.problem} = ${answer}`;
+              messages.appendChild(li);
+            });
+          }
+        } else {
+          clientId = parseInt(message.split(': ')[1]);
+          const li = document.createElement('li');
+          li.textContent = message;
+          messages.appendChild(li);
+        }
+      });
+
+      // Validate JSON
+      function isValidJSON(message) {
+        try {
+          JSON.parse(message);
+          return true;
+        } catch (error) {
+          console.error(error);
+          return false;
+        }
+      }
+    });
   </script>
 </body>
 </html>

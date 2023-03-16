@@ -9,20 +9,39 @@ const wss = new WebSocket.Server({ server });
 // giver mappen til express
 app.use(express.static('public'));
 
+function isValidJSON(message) {
+  try {
+    JSON.parse(message);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 // problem creator
 const operators = ['+', '-', '*', '/'];
 // laver 50 matematik stykker
 // underscoren er en placeholder for en variable
-const problems = Array.from({ length: 50 }, (_, i) => ({
+const problems = Array.from({ length: 50000 }, (_, i) => ({
   index: i + 1, // for at holde styr på hver index af problemet
   problem: `${Math.floor(Math.random() * 10) + 1} ${operators[Math.floor(Math.random() * operators.length)]} 
             ${Math.floor(Math.random() * 10) + 1}`,
   // laver problemet
 }));
 
+let nextProblemIndex = 0;
+
+function getNextProblem() {
+  if (nextProblemIndex < problems.length) {
+    const problem = problems[nextProblemIndex];
+    nextProblemIndex++;
+    return problem;
+  }
+  return null;
+}
+
 let clientIdCounter = 1; // id
 let clientCount = 0; // antal joinet
-let femfyre = false; // er der 5 dudes
 
 function updateUserCount() {
   const userCount = { type: 'usercount', count: clientCount }; // laver objekt
@@ -31,56 +50,45 @@ function updateUserCount() {
   });
 }
 
-wss.on('connection', (ws) => { // når der joiner en
-  clientCount++; // tæller en op
-  const clientId = clientIdCounter++; // id'et er simpelt nok at sætte til bare det nummer man var
-  console.log(`Client ${clientId} connected`); // logger det på serveren
+wss.on('connection', (ws) => {
+  clientCount++;
+  const clientId = clientIdCounter++;
+  console.log(`Client ${clientId} connected`);
 
   // Send the client ID back to the client
-  ws.send(`Your id is: ${clientId}`); // sender ideet til client side
+  ws.send(`Your id is: ${clientId}`);
 
-  // mens der stadig ikke er 5 dudes updater vi
-  if (clientCount < 5) {
-    updateUserCount();
-  } else if (!femfyre) {
-    femfyre = true; // når 5 er joinet så er vi klar
-
-    const clients = Array.from(wss.clients);
-    // .sort((a, b) => a.clientId - b.clientId); måske skal vi sorte i fremtiden?
-
-    // regner hvor mange problemer pr dude
-    const problemsPerClient = Math.floor(problems.length / 5);
-
-    // sender hver dude sit problem
-    for (let i = 0; i < 5; i++) {
-      // laver et array group som har subset af problemer
-      const group = problems.slice(i * problemsPerClient, (i + 1) * problemsPerClient)
-      // mapper hver problem til et nyt object og gemmer indexet
-        .map((problem) => ({
-          index: problem.index,
-          problem: problem.problem,
-        }));
-      // laver det til en json string og sender det
-      clients[i].send(JSON.stringify(group));
-    }
-
-    // Update
-    updateUserCount();
-  } else {
-    // Update
-    updateUserCount();
+  // Send a single problem when a client connects
+  const initialProblem = getNextProblem();
+  if (initialProblem) {
+    ws.send(JSON.stringify([initialProblem]));
   }
-  // når der lukkes tælles det ned
+
+  updateUserCount();
+
+  ws.on('message', (message) => {
+    if (isValidJSON(message)) {
+      const data = JSON.parse(message);
+      if (data.type === 'answer') {
+        console.log(
+          `Client ${data.clientId} solved problem ${data.problemIndex}: Answer = ${data.answer}`,
+        );
+
+        // Send a new problem when a client solves one
+        const newProblem = getNextProblem();
+        if (newProblem) {
+          ws.send(JSON.stringify([newProblem]));
+        }
+      }
+    }
+  });
+
+  // When a client disconnects
   ws.on('close', () => {
     console.log(`Client ${clientId} disconnected`);
     clientCount--;
 
-    // sikre at problems ikke bliver distribuereret
-    if (clientCount < 5) {
-      femfyre = false;
-    }
-
-    // altid update
+    // Update user count
     updateUserCount();
   });
 });
