@@ -6,7 +6,8 @@
   <title>WebSocket Chat</title>
 </head>
 <body>
-  <div id="usercount">Number of users connected: 0</div>
+  <button id="connectBtn">Connect</button>
+  <div id="usercount">Number of users connected:</div>
   <ul id="messages"></ul>
 
   <script>
@@ -22,46 +23,68 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const messages = document.getElementById('messages'); 
+      const messages = document.getElementById('messages');
       const userCount = document.getElementById('usercount');
-      const ws = new WebSocket(`ws://${location.host}`);
+      const connectBtn = document.getElementById('connectBtn');
 
+      let ws;
       let clientId;
-      ws.addEventListener('message', (event) => {
-        const message = event.data;
-        if (isValidJSON(message)) {
-          const data = JSON.parse(message);
-          if (data.type === 'usercount') {
-            userCount.textContent = `Antal brugere: ${data.count}`;
-          } else {
-            const group = data;
-            group.forEach((item) => {
-              // Calculate the answer
-              const answer = calculate(item.problem);
+      let connected = false;
 
-              // Send the answer back to the server
-              ws.send(JSON.stringify({
-                type: 'answer',
-                clientId: clientId,
-                problemIndex: item.index,
-                answer: answer
-              }));
-
-              // Create a new li for each problem and add it to the list of messages
-              const li = document.createElement('li');
-              li.textContent = `Problem ${item.index}: ${item.problem} = ${answer}`;
-              messages.appendChild(li);
-            });
-          }
+      connectBtn.addEventListener('click', () => {
+        if (!connected) {
+          ws = new WebSocket(`ws://${location.host}`);
+          setupWebSocketListeners();
+          connected = true;
+          connectBtn.textContent = 'Disconnect';
         } else {
-          clientId = parseInt(message.split(': ')[1]);
-          const li = document.createElement('li');
-          li.textContent = message;
-          messages.appendChild(li);
+          ws.close();
+          connected = false;
+          connectBtn.textContent = 'Connect';
         }
       });
 
-      // Validate JSON
+      function setupWebSocketListeners() {
+        ws.addEventListener('message', (event) => {
+          const message = event.data;
+          if (isValidJSON(message)) {
+            const data = JSON.parse(message);
+            if (data.type === 'usercount') {
+              userCount.textContent = `Antal brugere: ${data.count}`;
+            } else {
+              handleProblems(data);
+            }
+          } else {
+            clientId = parseInt(message.split(': ')[1]);
+            const li = document.createElement('li');
+            li.textContent = message;
+            messages.appendChild(li);
+          }
+        });
+
+        ws.addEventListener('close', () => {
+          connected = false;
+          connectBtn.textContent = 'Connect';
+          userCount.textContent = 'Number of users connected: 0';
+        });
+      }
+
+      function handleProblems(group) {
+        group.forEach((item) => {
+          const answer = calculate(item.problem);
+          ws.send(JSON.stringify({
+            type: 'answer',
+            clientId: clientId,
+            problemIndex: item.index,
+            answer: answer
+          }));
+
+          const li = document.createElement('li');
+          li.textContent = `Problem ${item.index}: ${item.problem} = ${answer}`;
+          messages.appendChild(li);
+        });
+      }
+
       function isValidJSON(message) {
         try {
           JSON.parse(message);

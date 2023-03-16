@@ -18,15 +18,11 @@ function isValidJSON(message) {
   }
 }
 
-// problem creator
 const operators = ['+', '-', '*', '/'];
-// laver 50 matematik stykker
-// underscoren er en placeholder for en variable
 const problems = Array.from({ length: 50000 }, (_, i) => ({
-  index: i + 1, // for at holde styr på hver index af problemet
+  index: i + 1,
   problem: `${Math.floor(Math.random() * 10) + 1} ${operators[Math.floor(Math.random() * operators.length)]} 
             ${Math.floor(Math.random() * 10) + 1}`,
-  // laver problemet
 }));
 
 let nextProblemIndex = 0;
@@ -40,13 +36,15 @@ function getNextProblem() {
   return null;
 }
 
-let clientIdCounter = 1; // id
-let clientCount = 0; // antal joinet
+let clientIdCounter = 1;
+let clientCount = 0;
 
 function updateUserCount() {
-  const userCount = { type: 'usercount', count: clientCount }; // laver objekt
-  wss.clients.forEach((client) => { // tæller hvor mange
-    client.send(JSON.stringify(userCount)); // sender det til clientside bruges i html
+  const userCount = { type: 'usercount', count: clientCount };
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(userCount));
+    }
   });
 }
 
