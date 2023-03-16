@@ -2,7 +2,7 @@
   "name": "p2",
   "version": "0.0.1",
   "description": "Project 2 for CS-23-DAT-2-03",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "lint": "eslint src/",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,7 +18,10 @@
   },
   "homepage": "https://github.com/Tinggaard/P2#README",
   "dependencies": {
-    "express": "^4.18.2"
+    "bufferutil": "^4.0.7",
+    "express": "^4.18.2",
+    "utf-8-validate": "^6.0.3",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "eslint": "^8.36.0",
