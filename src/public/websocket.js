@@ -3,9 +3,16 @@ import addition from './app.js';
 // open WebSocket with ws protocol instead of http
 const webSocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
 
-// first contact
-webSocket.onopen = () => {
-  webSocket.send('Hi there :)');
+function Obj(type, data) {
+  this.type = type;
+  this.data = data;
+}
+
+ // first contact
+ webSocket.onopen = () => {
+  let msg = 'Hi there :)';
+  const messageObj = ('message', msg)
+  webSocket.send(messageObj);
 };
 
 // when we get a message
@@ -28,10 +35,19 @@ webSocket.onmessage = (event) => {
       selector.innerHTML = `Current time on server is: ${data.data}`;
       break;
     case 'calc':
-      result = addition(data.data);
-      console.log(result);
-      selector = document.querySelector('#calculation');
-      selector.innerHTML = `Calculation received: ${data.data}, final calculation: ${result}`;
+      async function calcExp() {
+        await (addition(data.data))
+        .then((result) => {
+          console.log(result);
+          const selector = document.querySelector('#calculation');
+          selector.innerHTML = `Calculation received: ${data.data}, final calculation: ${result}`;
+          const resultObj = new Obj('result',result);
+          webSocket.send(JSON.stringify(resultObj));
+          console.log("hej");
+        })
+        .catch((err) => {console.log(err);});
+      }
+      calcExp();
       break;
     // do nothing
     default:
