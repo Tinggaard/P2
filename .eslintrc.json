@@ -12,6 +12,10 @@
     },
     "rules": {
         "linebreak-style": 0,
-        "import/extensions": { "js": "always", "json": "never" }
+        "import/extensions": [0, {
+            "js": "always",
+            "json": "never"
+        }
+        ]
     }
 }
