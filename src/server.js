@@ -14,7 +14,11 @@ function Obj(type, data) {
   this.data = data;
 }
 
-// const tasks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let taskNumber = 0;
+let resNr = 0;
+let allTasks = [[1,2],[3,4],[5,6],[7,8],[9,10]];
+let results = [];
+
 // express server implementation
 const exServer = express()
   // make the entire /public directory available
@@ -33,15 +37,25 @@ wsServer.on('connection', (webSocket) => {
 
   // at first connect, we send the ID to the client
   webSocket.send(JSON.stringify(id));
-  // Send numbers for calc
-  const A = [7, 19];
-  const calcMessage = new Obj('calc', A);
-  webSocket.send(JSON.stringify(calcMessage));
-
+  
   // log messages we get in
   webSocket.on('message', (message) => {
+    
+    // determine type of data
+    switch (message.type) {
+      case 'result':
+        results[resNr] = `${message.data}`;
+        resNr += 1;
+        console.log(results);
+        break;
+        // do nothing
+      default:
+        break;
+    };
+    assignTask(webSocket);
     console.log(`${id.data}: ${message}`);
   });
+
 
   // Print to console on client disconnected
   webSocket.on('close', () => {
@@ -51,6 +65,7 @@ wsServer.on('connection', (webSocket) => {
   });
 });
 
+
 // Just for checking information is sent to the clients
 setInterval(() => {
   wsServer.clients.forEach((client) => {
@@ -59,14 +74,13 @@ setInterval(() => {
   });
 }, 1000);
 
-// Submitting a task to each client
-// setInterval(() => {
-//  let taskIndexX = 0;
-//  let taskIndexY = 1;
-//  wsServer.clients.forEach((client) => {
-//    const calcMessage = new Obj('calc', (tasks[taskIndexX], tasks[taskIndexY]));
-//    client.send(JSON.stringify(calcMessage));
-//    taskIndexX += 2;
-//    taskIndexY += 2;
-//   });
-// }, 1000);
+// Assigning tasks to clients if there are available tasks
+function assignTask(webSocket) {
+  if(taskNumber !== allTasks.length){
+    const A = allTasks[taskNumber];
+    const calcMessage = new Obj('calc', A);
+    webSocket.send(JSON.stringify(calcMessage));
+    taskNumber += 1;
+  }
+}
+
