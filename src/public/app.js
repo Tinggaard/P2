@@ -1,9 +1,9 @@
 function addition(A) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
-      let answer = A[0]+A[1];
-      resolve(answer)
-    }, 2000);
+      const answer = A[0] + A[1];
+      resolve(answer);
+    }, 5000);
   });
 }
 
