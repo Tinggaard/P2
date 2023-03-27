@@ -8,10 +8,10 @@ function Obj(type, data) {
   this.data = data;
 }
 
- // first contact
- webSocket.onopen = () => {
-  let msg = 'Hi there :)';
-  const messageObj = ('message', msg)
+// first contact
+webSocket.onopen = () => {
+  const msg = 'Hi there :)';
+  const messageObj = new Obj('message', msg);
   webSocket.send(messageObj);
 };
 
@@ -19,8 +19,19 @@ function Obj(type, data) {
 webSocket.onmessage = (event) => {
   const data = JSON.parse(event.data);
   let selector;
-  let result;
   // console.log(add(1, 2));
+  async function calcExp() {
+    await (addition(data.data))
+      .then((result) => {
+        console.log(result);
+        selector = document.querySelector('#calculation');
+        selector.innerHTML = `Calculation received: ${data.data}, final calculation: ${result}`;
+        const resultObj = new Obj('result', result);
+        webSocket.send(JSON.stringify(resultObj));
+        console.log('hej');
+      })
+      .catch((err) => { console.log(err); });
+  }
 
   // determine type of data
   switch (data.type) {
@@ -35,19 +46,7 @@ webSocket.onmessage = (event) => {
       selector.innerHTML = `Current time on server is: ${data.data}`;
       break;
     case 'calc':
-      async function calcExp() {
-        await (addition(data.data))
-        .then((result) => {
-          console.log(result);
-          const selector = document.querySelector('#calculation');
-          selector.innerHTML = `Calculation received: ${data.data}, final calculation: ${result}`;
-          const resultObj = new Obj('result',result);
-          webSocket.send(JSON.stringify(resultObj));
-          console.log("hej");
-        })
-        .catch((err) => {console.log(err);});
-      }
-      calcExp();
+      calcExp(data);
       break;
     // do nothing
     default:

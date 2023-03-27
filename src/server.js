@@ -16,8 +16,8 @@ function Obj(type, data) {
 
 let taskNumber = 0;
 let resNr = 0;
-let allTasks = [[1,2],[3,4],[5,6],[7,8],[9,10]];
-let results = [];
+const allTasks = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]];
+const results = [];
 
 // express server implementation
 const exServer = express()
@@ -37,10 +37,19 @@ wsServer.on('connection', (webSocket) => {
 
   // at first connect, we send the ID to the client
   webSocket.send(JSON.stringify(id));
-  
+
+  // Assigning tasks to clients if there are available tasks
+  function assignTask() {
+    if (taskNumber !== allTasks.length) {
+      const A = allTasks[taskNumber];
+      const calcMessage = new Obj('calc', A);
+      webSocket.send(JSON.stringify(calcMessage));
+      taskNumber += 1;
+    }
+  }
+
   // log messages we get in
   webSocket.on('message', (message) => {
-    
     // determine type of data
     switch (message.type) {
       case 'result':
@@ -51,11 +60,10 @@ wsServer.on('connection', (webSocket) => {
         // do nothing
       default:
         break;
-    };
-    assignTask(webSocket);
+    }
+    assignTask();
     console.log(`${id.data}: ${message}`);
   });
-
 
   // Print to console on client disconnected
   webSocket.on('close', () => {
@@ -65,7 +73,6 @@ wsServer.on('connection', (webSocket) => {
   });
 });
 
-
 // Just for checking information is sent to the clients
 setInterval(() => {
   wsServer.clients.forEach((client) => {
@@ -73,14 +80,3 @@ setInterval(() => {
     client.send(JSON.stringify(time));
   });
 }, 1000);
-
-// Assigning tasks to clients if there are available tasks
-function assignTask(webSocket) {
-  if(taskNumber !== allTasks.length){
-    const A = allTasks[taskNumber];
-    const calcMessage = new Obj('calc', A);
-    webSocket.send(JSON.stringify(calcMessage));
-    taskNumber += 1;
-  }
-}
-

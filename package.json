@@ -23,6 +23,8 @@
     "module": "^1.2.5",
     "path": "^0.12.7",
     "utf-8-validate": "^6.0.3",
+    "util": "^0.12.5",
+    "util.promisify": "^1.1.1",
     "uuid": "^9.0.0",
     "ws": "^8.13.0"
   },
@@ -32,4 +34,4 @@
     "eslint-plugin-import": "^2.27.5"
   },
   "type": "module"
-  }
+}
