@@ -11,6 +11,14 @@
     <p id="id"></p>
     <p id="time"></p>
     <p id="calculation"></p>
-  <script src="websocket.js" type="module"></script>
+  <script src="client.js" type="module"></script>
+  <script>
+    // say hello to server
+    document
+      .querySelector('#sendToServer')
+      .addEventListener('click', () => {
+        webSocket.send('Hello server!');
+      });
+  </script>
   </body>
 </html>
