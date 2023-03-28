@@ -19,9 +19,6 @@ const results = [];
 const exServer = express()
   // make the entire /public directory available
   .use(express.static(path.join(dirname, 'public')))
-  .get('/', (req, res) => {
-    res.sendFile(path.join(dirname, 'public/clientUI.html'));
-  })
   .listen(3000, () => console.log(`Listening on ${3000}`));
 
 // Create a new instance of ws server
