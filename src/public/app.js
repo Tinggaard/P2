@@ -22,7 +22,6 @@ async function calcExp(data, webSocket) {
       selector.innerHTML = `Calculation received: ${data.data}, final calculation: ${result}`;
       const resultObj = new Obj('result', result);
       webSocket.send(JSON.stringify(resultObj));
-      console.log('hej');
     })
     .catch((err) => { console.log(err); });
 }
