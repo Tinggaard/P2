@@ -3,7 +3,7 @@ function addition(A) {
     setTimeout(() => {
       const answer = A[0] + A[1];
       resolve(answer);
-    }, 1000);
+    }, 5000);
   });
 }
 
