@@ -21,4 +21,5 @@ node src/server.js
 
 ### Jenkins
 
-Access via VPN
+Access via VPN or AAU network.
+Server runs on port 3000
