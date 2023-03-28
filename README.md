@@ -18,3 +18,7 @@ npm run lint
 ```bash
 node src/server.js
 ```
+
+### Jenkins
+
+Access via VPN
