@@ -7,11 +7,13 @@ function addition(A) {
   });
 }
 
+// Gives data a type to send data between client and server
 function Obj(type, data) {
   this.type = type;
   this.data = data;
 }
 
+// Function for printing result on website and sending result back to server
 async function calcExp(data, webSocket) {
   await (addition(data.data))
     .then((result) => {
@@ -37,4 +39,5 @@ function assignTask(allTasks, taskNumber, webSocket) {
   return taskNumber;
 }
 
+// Exports the functions for use in other files
 export { Obj, calcExp, assignTask };
