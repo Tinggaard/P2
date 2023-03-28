@@ -13,3 +13,8 @@ Linting
 ```bash
 npm run lint
 ```
+## Running
+
+```bash
+node src/server.js
+```
