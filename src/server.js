@@ -5,15 +5,25 @@ import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 
-import { Obj, assignTask } from './public/app.js';
+import {
+  Obj, assignTask, nextPermutation,
+} from './public/app.js';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-let taskNumber = 0;
+const currCombination = Array.from({ length: 4 }, (_, i) => i + 1); // !!!konstant? (eslint) !!!
+const TSPnodes = 10;
+const currPerm = currCombination.slice();
+const c = new Array(currPerm.length).fill(0);
+let i = 0;
+
+// let taskNumber = 0;
 let resNr = 0;
-const allTasks = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]];
+let subTasks = [];
 const results = [];
+
+[subTasks, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 5);
 
 // express server implementation
 const exServer = express()
@@ -47,8 +57,14 @@ wsServer.on('connection', (webSocket) => {
       default:
         break;
     }
-    taskNumber = assignTask(allTasks, taskNumber, webSocket);
-    console.log(`${id.data}: ${message}`);
+
+    if (subTasks.length === 0) {
+      // eslint-disable-next-line max-len
+      [subTasks, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 5);
+      console.log(subTasks);
+    }
+    assignTask(subTasks, webSocket);
+    // console.log(`${id.data}: ${message}`);
   });
 
   // Print to console on client disconnected
