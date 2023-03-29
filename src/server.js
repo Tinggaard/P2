@@ -12,9 +12,10 @@ import {
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-const currCombination = Array.from({ length: 4 }, (_, i) => i + 1); // !!!konstant? (eslint) !!!
-const TSPnodes = 10;
-const currPerm = currCombination.slice();
+let subtaskLength = 4
+const currCombination = Array.from({ length: subtaskLength }, (_, i) => i + 1); // !!!konstant? (eslint) !!!
+const TSPnodes = 6;
+let currPerm = currCombination.slice();
 const c = new Array(currPerm.length).fill(0);
 let i = 0;
 
@@ -23,7 +24,9 @@ let resNr = 0;
 let subTasks = [];
 const results = [];
 
-[subTasks, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 5);
+[subTasks, i, currPerm] = nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnodes, 5);
+console.log(subTasks);
+
 
 // express server implementation
 const exServer = express()
@@ -60,9 +63,9 @@ wsServer.on('connection', (webSocket) => {
 
     if (subTasks.length === 0) {
       // eslint-disable-next-line max-len
-      [subTasks, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 5);
-      console.log(subTasks);
+      [subTasks, i, currPerm] = nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnodes, 5);
     }
+    console.log(subTasks);
     assignTask(subTasks, webSocket);
     // console.log(`${id.data}: ${message}`);
   });
