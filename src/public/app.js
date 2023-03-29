@@ -119,24 +119,28 @@ function nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnode
       i = 0;
     }
   }
-  return [result, i];
+  return [result, i, currPerm];
 }
 
 // laver array [1, 2, ..., n] (fatter ikke helt
-// const currCombination = Array.from({ length: 4 }, (_, i) => i + 1); // !!!konstant? (eslint) !!!
-// const TSPnodes = 10;
-// let currPerm = currCombination.slice();
-// const c = new Array(currPerm.length).fill(0);
-// let i = 0;
-
-// let perms;
-// [perms, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 20);
-// console.log(perms);
-// currPerm = perms[perms.length - 1];
-
-// [perms, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 5);
-// console.log(perms);
-
+//const currCombination = Array.from({ length: 4 }, (_, i) => i + 1); // !!!konstant? (eslint) !!!
+//const TSPnodes = 10;
+//let currPerm = currCombination.slice();
+//const c = new Array(currPerm.length).fill(0);
+//let i = 0;
+//let perms;
+//[perms, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 100);
+//console.log(perms);
+//currPerm = perms[perms.length - 1];
+//[perms, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 100);
+//console.log(perms);
+//currPerm = perms[perms.length - 1];
+// [perms, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 100);
+//console.log(perms);
+//currPerm = perms[perms.length - 1];
+//[perms, i] = nextPermutation(currPerm, currPerm.length, c, i, currCombination, TSPnodes, 5);
+//console.log(perms);
+//
 // Exports the functions for use in other files
 export {
   Obj, calcExp, assignTask, nextCombination, nextPermutation, swapElements,
