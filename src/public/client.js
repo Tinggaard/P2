@@ -1,4 +1,4 @@
-import { Obj, calcExp } from './clientApp.js';
+import { Obj, calcExp } from './provider.js';
 
 // open WebSocket with ws protocol instead of http
 const webSocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
