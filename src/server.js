@@ -5,12 +5,25 @@ import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 import {
-  Obj, assignTask, nextPermutation, subtaskLength,
-  currCombination, TSPnodes, currPerm, c, i, subTasks,
+  Obj, assignTask, nextPermutation,
 } from './serverApp.js';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+
+// Initializes all variables to be used by the server when dividing a task into subtasks
+const subtaskLength = 4;
+const currCombination = Array.from({ length: subtaskLength }, (_, i) => i + 1); // !const? (eslint)!
+const TSPnodes = 6;
+let currPerm = currCombination.slice();
+const c = new Array(currPerm.length).fill(0);
+let i = 0;
+let subTasks = [];
+const results = [];
+let resNr = 0;
+
+// eslint-disable-next-line max-len
+[subTasks, i, currPerm] = nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnodes, 5);
 
 // express server implementation
 const exServer = express()
@@ -34,11 +47,13 @@ wsServer.on('connection', (webSocket) => {
   // log messages we get in
   webSocket.on('message', (message) => {
     // determine type of data
-    switch (message.type) {
+    const data = JSON.parse(message);
+    switch (data.type) {
+      // Shows that the server recieves a solution from the client.
       case 'result':
-        results[resNr] = `${message.data}`;
+        results[resNr] = `${data.data}`;
         resNr += 1;
-        console.log(results);
+        console.log(data.data);
         break;
         // do nothing
       default:
@@ -49,9 +64,7 @@ wsServer.on('connection', (webSocket) => {
       // eslint-disable-next-line max-len
       [subTasks, i, currPerm] = nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnodes, 5);
     }
-    console.log(subTasks);
     assignTask(subTasks, webSocket);
-    // console.log(`${id.data}: ${message}`);
   });
 
   // Print to console on client disconnected
