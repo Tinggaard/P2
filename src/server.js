@@ -4,29 +4,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
-
 import {
-  Obj, assignTask, nextPermutation,
-} from './public/app.js';
+  Obj, assignTask, nextPermutation, subtaskLength,
+  currCombination, TSPnodes, currPerm, c, i, subTasks,
+} from './serverApp.js';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
-
-let subtaskLength = 4
-const currCombination = Array.from({ length: subtaskLength }, (_, i) => i + 1); // !!!konstant? (eslint) !!!
-const TSPnodes = 6;
-let currPerm = currCombination.slice();
-const c = new Array(currPerm.length).fill(0);
-let i = 0;
-
-// let taskNumber = 0;
-let resNr = 0;
-let subTasks = [];
-const results = [];
-
-[subTasks, i, currPerm] = nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnodes, 5);
-console.log(subTasks);
-
 
 // express server implementation
 const exServer = express()
