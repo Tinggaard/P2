@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-plusplus */
 function addition(A) {
   return new Promise((resolve) => {
     setTimeout(() => {

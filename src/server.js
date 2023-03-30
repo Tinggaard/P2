@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 import {
   Obj, assignTask, nextPermutation,
-} from './serverApp.js';
+} from './control.js';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
