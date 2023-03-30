@@ -17,6 +17,8 @@
             "js": "always",
             "json": "never"
         }
-        ]
+        ],
+        "no-param-reassign": 0,
+        "no-plusplus": 0
     }
 }

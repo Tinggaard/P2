@@ -23,7 +23,6 @@ function Obj(type, data) {
 async function calcExp(data, webSocket) {
   await (addition(data.data))
     .then((result) => {
-      console.log(result);
       const selector = document.querySelector('#calculation');
       selector.innerHTML += `Calculation received: ${data.data}, final calculation: ${result} <br>`;
       const resultObj = new Obj('result', result);

@@ -1,18 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-plusplus */
-
-// Initializes all variables to be used by the server when dividing a task into subtasks
-const subtaskLength = 4;
-const currCombination = Array.from({ length: subtaskLength }, (_, i) => i + 1); // !const? (eslint)!
-const TSPnodes = 6;
-let currPerm = currCombination.slice();
-const c = new Array(currPerm.length).fill(0);
-let i = 0;
-let subTasks = [];
-
-[subTasks, i, currPerm] = nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnodes, 5);
-console.log(subTasks);
-
 // Gives data a type to send data between client and server
 function Obj(type, data) {
   this.type = type;
@@ -102,6 +87,5 @@ function nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnode
 }
 
 export {
-  Obj, assignTask, nextPermutation, subtaskLength,
-  currCombination, TSPnodes, currPerm, c, i, subTasks,
+  Obj, assignTask, nextPermutation,
 };

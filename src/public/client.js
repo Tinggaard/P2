@@ -7,14 +7,13 @@ const webSocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'))
 webSocket.onopen = () => {
   const msg = 'Hi there :)';
   const messageObj = new Obj('message', msg);
-  webSocket.send(messageObj);
+  webSocket.send(JSON.stringify(messageObj));
 };
 
 // when we get a message
 webSocket.onmessage = (event) => {
   const data = JSON.parse(event.data);
   let selector;
-  // console.log(add(1, 2));
 
   // determine type of data
   switch (data.type) {
