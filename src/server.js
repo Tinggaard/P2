@@ -29,11 +29,12 @@ let resNr = 0;
 const exServer = express()
   // make the entire /public directory available
   .use(express.static(path.join(dirname, 'public')))
-  .listen(3000, () => console.log(`Listening on ${3000}`));
+  .listen(3000, () => console.log(`Server running at http://localhost:${3000}`));
 
 // Create a new instance of ws server
 const wsServer = new WebSocketServer({ server: exServer });
 // Print to console on client connected
+let currentTask;
 wsServer.on('connection', (webSocket) => {
   // const available = new Obj('available', true);
   const id = new Obj('id', uuidv4());
@@ -64,13 +65,14 @@ wsServer.on('connection', (webSocket) => {
       // eslint-disable-next-line max-len
       [subTasks, i, currPerm] = nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnodes, 5);
     }
-    assignTask(subTasks, webSocket);
+    currentTask = assignTask(subTasks, webSocket); // This function sends the tasks.
   });
 
   // Print to console on client disconnected
   webSocket.on('close', () => {
     console.log(`${id.data}: *Disconnected*`);
     // Print number of clients connected
+    subTasks.push(currentTask);
     console.log('Connected clients:', wsServer.clients.size);
   });
 });
