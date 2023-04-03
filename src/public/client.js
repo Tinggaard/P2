@@ -2,7 +2,7 @@ import { Obj, calcExp } from './provider.js';
 
 // first contact
 let websocket;
-let disconnecting = false; // Add this line
+let disconnecting = false;
 let rdyButton;
 
 function addWebSocketEventListeners() {
@@ -13,7 +13,7 @@ function addWebSocketEventListeners() {
   };
 
   // when we get a message
-  websocket.onmessage = async (event) => { // Add 'async' here
+  websocket.onmessage = async (event) => {
     const data = JSON.parse(event.data);
     let selector;
 
