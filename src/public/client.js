@@ -1,37 +1,71 @@
 import { Obj, calcExp } from './provider.js';
 
-// open WebSocket with ws protocol instead of http
-const webSocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
-
 // first contact
-webSocket.onopen = () => {
-  const msg = 'Hi there :)';
-  const messageObj = new Obj('message', msg);
-  webSocket.send(JSON.stringify(messageObj));
-};
+let websocket;
+let disconnecting = false; // Add this line
+let rdyButton;
 
-// when we get a message
-webSocket.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  let selector;
+function addWebSocketEventListeners() {
+  websocket.onopen = () => {
+    const connectMsg = 'connect message';
+    const testMessage = new Obj('message', connectMsg);
+    websocket.send(JSON.stringify(testMessage));
+  };
 
-  // determine type of data
-  switch (data.type) {
-    // get UUID from server
-    case 'id':
-      selector = document.querySelector('#id');
-      selector.innerHTML = `Your ID is: ${data.data}`;
-      break;
-    // get server time
-    case 'time':
-      selector = document.querySelector('#time');
-      selector.innerHTML = `Current time on server is: ${data.data}`;
-      break;
-    case 'calc':
-      calcExp(data, webSocket);
-      break;
-    // do nothing
-    default:
-      break;
+  // when we get a message
+  websocket.onmessage = async (event) => { // Add 'async' here
+    const data = JSON.parse(event.data);
+    let selector;
+
+    // determine type of data
+    switch (data.type) {
+      // get UUID from server
+      case 'id':
+        selector = document.querySelector('#id');
+        selector.innerHTML = `Your ID is: ${data.data}`;
+        break;
+      // get server time
+      case 'time':
+        selector = document.querySelector('#time');
+        selector.innerHTML = `Current time on server is: ${data.data}`;
+        break;
+      case 'calc':
+        await calcExp(data, websocket);
+        if (disconnecting) {
+          websocket.close();
+          rdyButton.value = 'Connect';
+        }
+        break;
+        // do nothing
+      default:
+        break;
+    }
+  };
+}
+
+function rdySender() {
+  if (rdyButton.value === 'Connect') {
+    disconnecting = false;
+    websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
+    console.log('connect');
+    rdyButton.value = 'Disconnect';
+
+    // Add WebSocket event listeners when connecting
+    addWebSocketEventListeners();
+  } else {
+    console.log('disconnect');
+    websocket.close();
+    rdyButton.value = 'Connect';
   }
-};
+}
+
+rdyButton = document.querySelector('#connecterBtn');
+rdyButton.addEventListener('click', () => {
+  rdySender();
+});
+
+document
+  .querySelector('#sendToServer')
+  .addEventListener('click', () => {
+    websocket.send('Hello server!');
+  });

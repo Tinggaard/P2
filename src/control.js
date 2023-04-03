@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-plusplus */
+
 // Gives data a type to send data between client and server
 function Obj(type, data) {
   this.type = type;
@@ -9,6 +12,7 @@ function assignTask(subTasks, webSocket) {
   const A = subTasks.pop();
   const calcMessage = new Obj('calc', A);
   webSocket.send(JSON.stringify(calcMessage));
+  return A;
 }
 
 /** Swaps 2 elements
