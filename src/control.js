@@ -8,12 +8,14 @@ function Obj(type, data) {
 class Task {
   constructor(nodeCount, weights) {
     this.nodeCount = nodeCount; // amount of nodes
-    this.nodes = Array.from({ length: this.nodeCount - 1 }, (_, i) => i + 1);
+    this.nodes = Array.from(Array(nodeCount).keys()).slice(1); // array from 1 -> n-1
     this.weights = weights; // matrix of weights
     this.subtaskLength = 3; // how many constant value we use in the iterator
     this.currCombination = this.nodes.slice(0, this.subtaskLength); // init combination
     this.currPermutation = this.currCombination.slice(); // copy of the above
     this.unfinished = []; // array of unfinished task from DC'ed clients
+    this.shortestPath = []; // permutation of shortest path
+    this.shortestSum = Infinity; // sum of above permutation
   }
 
   swapElements(index1, index2) {
