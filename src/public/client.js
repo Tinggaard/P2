@@ -1,8 +1,9 @@
-import { Obj, calcExp } from './provider.js';
+import { Obj, subtaskHandler } from './provider.js';
 
 // first contact
 let websocket;
 let rdyButton;
+let weights;
 
 function addWebSocketEventListeners() {
   websocket.onopen = () => {
@@ -29,7 +30,12 @@ function addWebSocketEventListeners() {
         selector.innerHTML = `Current time on server is: ${data.data}`;
         break;
       case 'calc':
-        await calcExp(data, websocket);
+        await subtaskHandler(data.data, weights, websocket);
+        console.log(weights);
+        console.log(data.data);
+        break;
+      case 'weights':
+        weights = data.data;
         break;
       // do nothing
       default:

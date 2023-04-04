@@ -42,6 +42,9 @@ wsServer.on('connection', (webSocket) => {
   // at first connect, we send the ID to the client
   webSocket.send(JSON.stringify(id));
 
+  const weightsObj = new Obj('weights', weights);
+  webSocket.send(JSON.stringify(weightsObj));
+
   let problem = iterator.next();
 
   if (!problem.done) {
