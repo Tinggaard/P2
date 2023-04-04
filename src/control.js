@@ -3,89 +3,71 @@ function Obj(type, data) {
   this.data = data;
 }
 
-// Assigning tasks to clients if there are available tasks
-function assignTask(subTasks, webSocket) {
-  const A = subTasks.pop();
-  const calcMessage = new Obj('calc', A);
-  webSocket.send(JSON.stringify(calcMessage));
-  return A;
-}
+// class keeping track of the main task, and iterating combinations/permutations
+class Task {
+  constructor(nodeCount, weights) {
+    this.nodeCount = nodeCount; // amount of nodes
+    this.nodes = Array.from(Array(nodeCount).keys()).slice(1); // array from 1 -> n-1
+    this.weights = weights; // matrix of weights
+    this.subtaskLength = 3; // how many constant value we use in the iterator
+    this.currCombination = this.nodes.slice(0, this.subtaskLength); // init combination
+    this.currPermutation = this.currCombination.slice(); // copy of the above
+    this.unfinished = []; // array of unfinished task from DC'ed clients
+    this.shortestPath = []; // permutation of shortest path
+    this.shortestSum = Infinity; // sum of above permutation
+  }
 
-/** Swaps 2 elements
- * @param {array} array The array where
- * @param {number} index1 Index of the first element
- * @param {number} index2 Index of the first element
- */
-function swapElements(array, index1, index2) {
-  const temp = array[index1];
-  array[index1] = array[index2];
-  array[index2] = temp;
-}
+  swapElements(index1, index2) {
+    const temp = this.currPermutation[index1];
+    this.currPermutation[index1] = this.currPermutation[index2];
+    this.currPermutation[index2] = temp;
+  }
 
-/** Returns the next combination of the subtask
-  * @param {number} TSPnodes The total number of nodes used
-  * @param {number} subtaskLength Number of elements in the subtask
-  * @param {arrray} currCombination The current combination - used to create the next combination
-  */
-function nextCombination(currCombination, TSPnodes, subtaskLength) {
-  let i = subtaskLength - 1;
-  while (i >= 0) {
-    if (currCombination[i] === TSPnodes - (subtaskLength - i)) {
-      i--;
+  // Heap's Algorithm
+  * getNextPermutation(k) {
+    if (this.unfinished.length !== 0) { // if we have previously unfinished tasks
+      yield this.unfinished.pop(0); // get first element
+    }
+    if (k === 1) { // base case
+      yield this.currPermutation;
     } else {
-      currCombination[i] += 1;
-      for (let j = i + 1; j < subtaskLength; j++) {
-        currCombination[j] = currCombination[j - 1] + 1;
-      }
-      return currCombination.slice();
-    }
-  }
-  console.log('TSP problem solved'); // If there are no more combinations (!!!LINJE SKAL ÆNDRES!!!)
-  return null;
-}
-
-/** A modified version of Heaps algorithm that finds perms until we have the desired amount
-  * @param {array} currPerm - The current permutation used to find the next permutation
-  * @param {number} subtaskLength - Number of elements in the subtask
-  * @param {array} c - An array used for generating perms in heaps algoritm
-  * @param {number} TSPnodes - Number of destinations we need to visit (is also the full task)
-  * @param {number} amount - Desired amount of perms
-  * @returns {Array} - An array of perms of
-  */
-
-function nextPermutation(currPerm, subtaskLength, c, i, currCombination, TSPnodes, amount) {
-  const result = []; // Array to hold the perms
-
-  while (result.length < amount) { // Loop until the desired amount is reached
-    if (i < subtaskLength) {
-      // Generate the next permutation of the current array
-      if (c[i] < i) {
-        if (!(i % 2)) {
-          swapElements(currPerm, 0, i);
+      // console.log(k, arr);
+      yield* this.getNextPermutation(k - 1, this.currPermutation);
+      // console.log(this.currCombination);
+      for (let i = 0; i < k - 1; i++) {
+        if (k % 2 === 0) { // k is even
+          this.swapElements(i, k - 1);
         } else {
-          swapElements(currPerm, c[i], i);
+          this.swapElements(0, k - 1);
         }
-        result.push(currPerm.slice()); // Add the new permutation to the result array
-        c[i]++;
-        i = 0;
-      } else {
-        c[i] = 0;
-        i++;
+        yield* this.getNextPermutation(k - 1, this.currPermutation);
       }
-    } else { // When there are no more perms for the current combination
-      // Generate the next combination
-      currPerm = nextCombination(currCombination, TSPnodes, subtaskLength);
-      if (currPerm === null) { // If there are no more combinations, return the result array
-        return [result, i, currPerm];
-      }
-      result.push(currPerm.slice()); // Add the new combination to the result array
-      c = c.fill(0);
-      i = 0;
     }
   }
-  return [result, i, currPerm];
+
+  * getNextCombination() {
+    let i = this.subtaskLength - 1; // current index we change
+    // yield the first iteration
+    yield* this.getNextPermutation(this.subtaskLength, this.currPermutation);
+
+    while (i >= 0) {
+      // check if current index is at max value
+      if (this.currCombination[i] === (this.nodeCount) - (this.subtaskLength - i)) {
+        i--;
+      } else { // increment i by 1 and let all previous nodes be 1 larger
+        this.currCombination[i] += 1;
+        for (let j = i + 1; j < this.subtaskLength; j++) {
+          this.currCombination[j] = this.currCombination[j - 1] + 1;
+        }
+        // copy combination into premutation
+        this.currPermutation = this.currCombination.slice();
+        yield* this.getNextPermutation(this.subtaskLength, this.currPermutation);
+        i = this.subtaskLength - 1;
+      }
+    }
+  }
 }
 
 export {
-  Obj, assignTask, nextPermutation,
+  Obj, Task,
 };
