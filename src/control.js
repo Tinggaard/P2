@@ -1,4 +1,3 @@
-// Gives data a type to send data between client and server
 function Obj(type, data) {
   this.type = type;
   this.data = data;
@@ -26,7 +25,10 @@ class Task {
 
   // Heap's Algorithm
   * getNextPermutation(k) {
-    if (k === 1) {
+    if (this.unfinished.length !== 0) { // if we have previously unfinished tasks
+      yield this.unfinished.pop(0); // get first element
+    }
+    if (k === 1) { // base case
       yield this.currPermutation;
     } else {
       // console.log(k, arr);

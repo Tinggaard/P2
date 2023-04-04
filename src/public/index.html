@@ -6,19 +6,12 @@
   
   <body>
     <form>
-      <input type="button" id="sendToServer" value="Send to server"> 
+      <input type="button" id="connecterBtn" value="Connect">
     </form>
     <p id="id"></p>
     <p id="time"></p>
     <p id="calculation"></p>
   <script src="client.js" type="module"></script>
-  <script>
-    // say hello to server
-    document
-      .querySelector('#sendToServer')
-      .addEventListener('click', () => {
-        webSocket.send('Hello server!');
-      });
-  </script>
+  
   </body>
 </html>
