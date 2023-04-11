@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Test</title>
+    <title>TSP Grid Computing</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
-  
   <body>
-    <form>
-      <input type="button" id="connecterBtn" value="Connect">
-    </form>
+    <nav class="topNavBar">
+      <div class="homeButton"><button>Home</button></div>
+      <div class="statsButton"><button>Stats</button></div>
+      <div class="userButton"><button>User</button></div>
+    </nav>
+    <div class="connecterBtnClassDiv">
+      <form>
+        <input type="button" class="connecterBtnClass" id="connecterBtn" value="Connect">
+      </form>
+    </div>
     <p id="id"></p>
     <p id="time"></p>
-    <p id="calculation"></p>
+    <div class="calculationDiv">
+      <p class="calculation" id="calculation"></p>
+    </div>
+
   <script src="client.js" type="module"></script>
   
   </body>

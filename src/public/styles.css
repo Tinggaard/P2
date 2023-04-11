@@ -1,0 +1,94 @@
+      .topNavBar {
+        display: grid;
+        grid-auto-flow: column;
+        grid-template-columns: 33fr 33fr 33fr ;
+        background-color: #242526;
+        margin-bottom: 15px;
+      }
+      .topNavBar > div {
+        margin: 10px;
+      }
+      .topNavBar > div > button {
+        background-color: transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+        font-size: 24px;
+        font-family:'Courier New', Courier, monospace;
+      }
+      .topNavBar > div > button:hover {
+        text-decoration: underline;
+      }
+      .topNavUnderline {
+        border: solid;
+        border-width: 1px;
+        border-color: lightgray;
+        margin-top: 5px;
+      }
+      .connecterBtnClass {
+        background-image: linear-gradient(to top, #242526, #3A3B3C );        
+        border-radius: 10px;
+        width: 200px;
+        height: 30px;
+        border: none;
+        cursor: pointer;
+        color: White;
+        font-family:'Courier New', Courier, monospace;
+      }
+
+      .connecterBtnClass:hover {
+        background-image: linear-gradient(to top, #3A3B3C, #242526 );     
+      }
+      
+      .connecterBtnClassDiv {
+        text-align: center;
+      }
+      
+      .homeButton {
+        text-align: left;
+      }
+
+      .statsButton {
+        text-align: center;
+      }
+
+      .userButton {
+        text-align: right;
+      }
+
+      .calculationDiv{
+        background-color: #3A3B3C;
+        margin-left: 30%;
+        margin-right: 30%;
+        border-radius: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+
+      .calculation {
+        text-align: center;
+      }
+
+      #id {
+        text-align: center;
+      }
+
+      #time {
+        text-align: center;
+      }
+      
+      body {
+        background-color: #18191A;
+        margin: 0;
+        font-family:'Courier New', Courier, monospace;
+      }
+      p {
+        color: White;
+      }
+      button {
+        color: White;
+      }
+
+
