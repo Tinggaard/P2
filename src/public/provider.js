@@ -1,3 +1,18 @@
+import init, { add } from './wasm/tsp.js';
+
+const weights = [
+  [0, 2, 3, 4, 5],
+  [4, 0, 2, 1, 3],
+  [7, 3, 0, 3, 6],
+  [8, 1, 100, 0, 7],
+  [1, 9, 8, 5, 0],
+];
+
+init().then(() => {
+  // console.log(add([3, 2], weights.flat(), 5));
+  add([2, 1], weights.flat(), 5);
+});
+
 function bruteforce(staticRoute, weights) {
   return new Promise((resolve) => {
     setTimeout(() => {
