@@ -1,4 +1,4 @@
-import init, { add } from './wasm/tsp.js';
+import init, { brute_force } from './wasm/tsp.js';
 
 const weights = [
   [0, 2, 3, 4, 5],
@@ -9,8 +9,8 @@ const weights = [
 ];
 
 init().then(() => {
-  // console.log(add([3, 2], weights.flat(), 5));
-  add([2, 1], weights.flat(), 5);
+  const result = brute_force([2, 1], weights.flat(), weights.length);
+  console.log(`Found shortest path to be ${result}`);
 });
 
 function bruteforce(staticRoute, weights) {
