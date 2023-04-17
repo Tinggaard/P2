@@ -1,15 +1,17 @@
 use itertools::Itertools;
 
 fn main(){
-    let weights: Vec<Vec<usize>>  = vec![
-        vec![0, 2, 3, 4, 5],
-        vec![4, 0, 2, 1, 3],
-        vec![7, 3, 0, 3, 6],
-        vec![8, 1, 100, 0, 7],
-        vec![1, 9, 8, 5, 0],
+    let weights: [[usize; 5]; 5]  = [
+        [0, 2, 3, 4, 5],
+        [4, 0, 2, 1, 3],
+        [7, 3, 0, 3, 6],
+        [8, 1, 100, 0, 7],
+        [1, 9, 8, 5, 0],
       ];
 
-    println!("{:?}", get_all_perm(&weights, weights.len()));
+      let vec: Vec<_> = weights.iter().map(|&x| x.to_vec()).collect();
+
+    println!("{:?}", get_all_perm(&vec, weights.len()));
     
 }
 
