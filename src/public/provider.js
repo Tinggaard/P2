@@ -1,27 +1,13 @@
-import init, { bruteForce } from './wasm/tsp.js';
-
-const weights = [
-  [0, 2, 3, 4, 5],
-  [4, 0, 2, 1, 3],
-  [7, 3, 0, 3, 6],
-  [8, 1, 100, 0, 7],
-  [1, 9, 8, 5, 0],
-];
-
-init().then(() => {
-  const result = bruteForce([2, 1], weights.flat(), weights.length);
-  console.log(`Found shortest path to be ${result}`);
-});
+import { bruteForce } from './wasm/tsp.js';
 
 function bruteforce(staticRoute, weights) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const initialValue = 0;
-      const sumWithInitial = staticRoute.reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        initialValue,
-      );
-      resolve(sumWithInitial);
+      const shortestRoute = bruteForce(staticRoute, weights.flat(), weights.length);
+      shortestRoute.unshift(staticRoute);
+      shortestRoute.push(0);
+      console.log(shortestRoute);
+      resolve(shortestRoute);
     }, 1000);
   });
 }

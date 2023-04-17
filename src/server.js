@@ -61,7 +61,7 @@ wsServer.on('connection', (webSocket) => {
       case 'result':
         results[resNr] = `${data.data}`;
         resNr += 1;
-        console.log(`recieved result: ${data.data}`);
+        console.log(`received result: ${data.data}`);
 
         problem = iterator.next(); // send new problem
         if (!problem.done) {
