@@ -13,14 +13,21 @@ const results = [];
 let resNr = 0;
 
 const weights = [
-  [0, 2, 3, 4, 5],
-  [4, 0, 2, 1, 3],
-  [7, 3, 0, 3, 6],
-  [8, 1, 100, 0, 7],
-  [1, 9, 8, 5, 0],
+  [0, 2, 3, 4, 5, 7, 7, 3, 0, 3, 6, 4],
+  [4, 0, 2, 1, 3, 8, 7, 3, 0, 3, 6, 4],
+  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4],
+  [8, 1, 100, 0, 7, 2, 7, 3, 0, 3, 6, 4],
+  [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 6, 4],
+  [7, 3, 0, 3, 6, 0, 7, 3, 0, 3, 6, 4],
+  [0, 2, 3, 4, 5, 7, 0, 3, 0, 3, 6, 4],
+  [4, 0, 2, 1, 3, 8, 7, 0, 0, 3, 6, 4],
+  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4],
+  [8, 1, 100, 0, 7, 2, 7, 3, 3, 0, 6, 4],
+  [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 0, 4],
+  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 0],
 ];
 
-const task = new Task(5, weights);
+const task = new Task(weights.length, weights);
 const iterator = task.getNextCombination();
 
 // express server implementation
@@ -61,13 +68,18 @@ wsServer.on('connection', (webSocket) => {
       case 'result':
         results[resNr] = `${data.data}`;
         resNr += 1;
-        console.log(`received result: ${data.data}`);
+        console.log(`received result: ${data.data.route}  |   length: ${data.data.routeLength}`);
 
+        if (task.shortestSum > data.data.routeLength) {
+          task.shortestPath = data.data.route.slice();
+          task.shortestSum = data.data.routeLength;
+        }
         problem = iterator.next(); // send new problem
         if (!problem.done) {
           const obj = new Obj('calc', problem.value);
           webSocket.send(JSON.stringify(obj));
         }
+        console.log(`shortest route:  ${task.shortestPath}  |   shortest route length ${task.shortestSum}`);
         break;
       // do nothing
       default:
