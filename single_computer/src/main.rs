@@ -1,17 +1,26 @@
 use itertools::Itertools;
+use std::fs::File;
 
 fn main(){
-    let weights: [[usize; 5]; 5]  = [
-        [0, 2, 3, 4, 5],
-        [4, 0, 2, 1, 3],
-        [7, 3, 0, 3, 6],
-        [8, 1, 100, 0, 7],
-        [1, 9, 8, 5, 0],
-      ];
+    let file = File::open("../weights.json")
+        .expect("json file error");
+    let json: serde_json::Value = serde_json::from_reader(file)
+        .expect("json parsing error");
 
-      let vec: Vec<_> = weights.iter().map(|&x| x.to_vec()).collect();
 
-    println!("{:?}", get_all_perm(&vec, weights.len()));
+    let json_weights = json["weights"].as_array().unwrap();
+
+    let weights_result: Result<Vec<Vec<usize>>, _> = json_weights.into_iter()
+    .map(|x| {
+        x.as_array()
+            .ok_or("Not an array")
+            .and_then(|y| y.iter().map(|z| z.as_u64().ok_or("Not an usize").map(|w| w as usize)).collect())
+    })
+    .collect();
+
+    let weights = weights_result.unwrap();
+    
+    println!("{:?}", get_all_perm(&weights, weights.len()));
     
 }
 
