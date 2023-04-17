@@ -13,11 +13,11 @@ const results = [];
 let resNr = 0;
 
 const weights = [
-  [1, 2, 3, 4, 5],
-  [4, 3, 2, 1, 3],
-  [7, 3, 6, 3, 6],
-  [8, 1, 100, 2, 7],
-  [1, 9, 8, 5, 13],
+  [0, 2, 3, 4, 5],
+  [4, 0, 2, 1, 3],
+  [7, 3, 0, 3, 6],
+  [8, 1, 100, 0, 7],
+  [1, 9, 8, 5, 0],
 ];
 
 const task = new Task(5, weights);
@@ -41,6 +41,9 @@ wsServer.on('connection', (webSocket) => {
 
   // at first connect, we send the ID to the client
   webSocket.send(JSON.stringify(id));
+
+  const weightsObj = new Obj('weights', weights);
+  webSocket.send(JSON.stringify(weightsObj));
 
   let problem = iterator.next();
 
