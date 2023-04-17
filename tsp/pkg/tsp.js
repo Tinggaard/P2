@@ -56,14 +56,14 @@ function getArrayU32FromWasm0(ptr, len) {
 * @param {number} n
 * @returns {Uint32Array}
 */
-export function brute_force(static_route, weights, n) {
+export function bruteForce(static_route, weights, n) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passArray32ToWasm0(static_route, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
         const ptr1 = passArray32ToWasm0(weights, wasm.__wbindgen_malloc);
         const len1 = WASM_VECTOR_LEN;
-        wasm.brute_force(retptr, ptr0, len0, ptr1, len1, n);
+        wasm.bruteForce(retptr, ptr0, len0, ptr1, len1, n);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
         var v2 = getArrayU32FromWasm0(r0, r1).slice();

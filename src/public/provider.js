@@ -1,4 +1,4 @@
-import init, { brute_force } from './wasm/tsp.js';
+import init, { bruteForce } from './wasm/tsp.js';
 
 const weights = [
   [0, 2, 3, 4, 5],
@@ -9,7 +9,7 @@ const weights = [
 ];
 
 init().then(() => {
-  const result = brute_force([2, 1], weights.flat(), weights.length);
+  const result = bruteForce([2, 1], weights.flat(), weights.length);
   console.log(`Found shortest path to be ${result}`);
 });
 

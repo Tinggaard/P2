@@ -1,9 +1,9 @@
 extern crate console_error_panic_hook;
-use std::panic; 
+use std::panic;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn brute_force(static_route: &[usize], weights: &[usize], n: usize) -> Vec<usize> {
+pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<usize> {
     // print panics to the console in browser
     panic::set_hook(Box::new(console_error_panic_hook::hook));
 
@@ -21,12 +21,12 @@ pub fn brute_force(static_route: &[usize], weights: &[usize], n: usize) -> Vec<u
     let mut shortest_index = 0; // index of shortest route
 
 
-    // find shortest of all combinations
-    for (i, res) in all_combs.iter().enumerate() {
+    // find shortest of all permutations
+    for (i, perm) in all_combs.iter().enumerate() {
         current = 0;
 
         // get the distance
-        for node in res.iter() {
+        for node in perm.iter() {
             current += weights[current_index*n + node];
             current_index = *node;
         }
@@ -40,18 +40,16 @@ pub fn brute_force(static_route: &[usize], weights: &[usize], n: usize) -> Vec<u
             shortest_index = i;
         }
     }
-    // log(shortest_index);
 
     // get combination that is shortest
-    let shortest = all_combs.remove(shortest_index);
+    let result = all_combs.remove(shortest_index);
 
     // return it
-    shortest
+    result
 }
 
 fn heaps(k: usize, arr: &mut [usize], result: &mut Vec<Vec<usize>>) {
     if k == 1 {
-        // log_arr(arr);
         result.push(arr.to_vec());
         return;
     }
@@ -66,17 +64,4 @@ fn heaps(k: usize, arr: &mut [usize], result: &mut Vec<Vec<usize>>) {
         }
         heaps(k - 1, arr, result);
     }
-}
-
-#[wasm_bindgen]
-extern "C" {
-    // Use `js_namespace` here to bind `console.log(..)` instead of just
-    // `log(..)`
-
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(a: usize);
-
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log_arr(a: &[usize]);
-
 }
