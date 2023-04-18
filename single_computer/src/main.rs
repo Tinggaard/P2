@@ -1,7 +1,11 @@
 use itertools::Itertools;
 use std::fs::File;
+use std::time::Instant;
 
 fn main(){
+    // Starts timer
+    let start_time = Instant::now();
+
     // Loading in the json file
     let file = File::open("../../weights.json")
         .expect("json file error");
@@ -26,6 +30,13 @@ fn main(){
     
     // Console logging the result of the shortest path
     println!("{:?}", get_all_perm(&weights, weights.len()));
+
+    // Ends timer and calcs elapsed time
+    let end_time = Instant::now();
+    let elapsed_time = end_time - start_time;
+
+    // Prints time taken
+    println!("Elapsed time {:?}", elapsed_time);
     
 }
 
