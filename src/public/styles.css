@@ -78,6 +78,15 @@
       #time {
         text-align: center;
       }
+
+      .progressBar {
+        text-align: center;
+      }
+
+      .progressBar > p{
+        text-align: center;
+        display: inline;
+      }
       
       body {
         background-color: #18191A;

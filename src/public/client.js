@@ -37,6 +37,15 @@ function addWebSocketEventListeners() {
       case 'weights':
         weights = data.data;
         break;
+      case 'progress':
+        selector = document.querySelector('#progress');
+        selector.innerHTML = data.data;
+        break;
+      case 'totalSubtasks':
+        console.log('received on client side: ', data.data);
+        selector = document.querySelector('#totalSubtasks');
+        selector.innerHTML = data.data;
+        break;
       // do nothing
       default:
         break;
