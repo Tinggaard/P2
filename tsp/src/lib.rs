@@ -42,6 +42,8 @@ pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<us
     }
 
     // get combination that is shortest
+    let testlength = all_combs.len();
+    log(testlength); 
     let result = all_combs.remove(shortest_index);
 
     // return it
@@ -64,4 +66,10 @@ fn heaps(k: usize, arr: &mut [usize], result: &mut Vec<Vec<usize>>) {
         }
         heaps(k - 1, arr, result);
     }
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(a: usize);
 }
