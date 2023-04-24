@@ -9,7 +9,12 @@ class Task {
     this.nodeCount = nodeCount; // amount of nodes
     this.nodes = Array.from(Array(nodeCount).keys()).slice(1); // array from 1 -> n-1
     this.weights = weights; // matrix of weights
-    this.subtaskLength = 3; // how many constant value we use in the iterator
+    // Make sure the clients don't have to calculate too much
+    if (nodeCount > 12) {
+      this.subtaskLength = nodeCount - 10;
+    } else {
+      this.subtaskLength = 2;
+    }
     this.currCombination = this.nodes.slice(0, this.subtaskLength); // init combination
     this.currPermutation = this.currCombination.slice(); // copy of the above
     this.unfinished = []; // array of unfinished task from DC'ed clients

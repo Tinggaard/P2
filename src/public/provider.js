@@ -1,28 +1,33 @@
 import init, { bruteForce } from './wasm/tsp.js';
 
-const weights = [
-  [0, 2, 3, 4, 5],
-  [4, 0, 2, 1, 3],
-  [7, 3, 0, 3, 6],
-  [8, 1, 100, 0, 7],
-  [1, 9, 8, 5, 0],
-];
+init().then();
 
-init().then(() => {
-  const result = bruteForce([2, 1], weights.flat(), weights.length);
-  console.log(`Found shortest path to be ${result}`);
-});
+function calcRouteLength(weights, route) {
+  let routeLength = 0;
+  for (let i = 0; i < route.length - 1; i++) {
+    routeLength += weights[route[i]][route[i + 1]];
+  }
+  return routeLength;
+}
 
-function bruteforce(staticRoute, weights) {
+function calcRoute(staticRoute, weights) {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      const initialValue = 0;
-      const sumWithInitial = staticRoute.reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        initialValue,
-      );
-      resolve(sumWithInitial);
-    }, 1000);
+    const arr = bruteForce(staticRoute, weights.flat(), weights.length);
+    // New array with starting point and the static route
+    const subtaskResult = { route: [0, staticRoute].flat(), routeLength: -1 };
+
+    // Add the wasm array to js array
+    for (let i = 0; i < arr.length; i++) {
+      subtaskResult.route.push(arr[i]);
+    }
+
+    // Add the last point of the route
+    subtaskResult.route.push(0); // Append the route finish
+    console.log('test: ', subtaskResult);
+    // Calculate route length and add to subtask object
+    subtaskResult.routeLength = calcRouteLength(weights, subtaskResult.route);
+
+    resolve(subtaskResult);
   });
 }
 
@@ -34,10 +39,10 @@ function Obj(type, data) {
 
 // Function for printing result on website and sending result back to server
 async function subtaskHandler(data, weights, webSocket) {
-  await (bruteforce(data, weights))
+  await (calcRoute(data, weights))
     .then((result) => {
       const selector = document.querySelector('#calculation');
-      selector.innerHTML += `Calculation received: ${data}, final calculation: ${result} <br>`;
+      selector.innerHTML += `Calculation received: ${data}, final calculation: ${result.route} <br>`;
       const resultObj = new Obj('result', result);
       webSocket.send(JSON.stringify(resultObj));
     })
