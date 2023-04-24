@@ -4,6 +4,14 @@
 
 ## Installation
 
+*Note:* if you are using Windows, symlinks may not work as intended out of the box.
+Ensure that "developer mode" is enabled in Windows, which gives `mklink` permissions.
+Afterwards, ensure that `core.symlinks` are enabled, once the repo is cloned. 
+
+```bash
+git clone -c core.symlinks=true https://github.com/Tinggaard/P2
+```
+
 ```bash
 npm install
 ```
@@ -39,7 +47,18 @@ wasm-pack build --target web
 node src/server.js
 ```
 
-### Server InstanceRunning the latest master build at 
+### Single computer comparison
+
+For comparing the result with a single computer, a brute force approach has been implemented in the [`single_computer`](/single_computer) directory.
+
+The inputfile (`weights.json`) is statically linked, and thus this file must be run from `single_computer`, directory or the path changed.
+
+```bash
+cd single_computer
+cargo run
+```
+
+### Server instance running the latest master build at 
 
 Running the latest master build at [http://10.92.0.183:3000/](http://10.92.0.183:3000/)
 
