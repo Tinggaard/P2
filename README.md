@@ -1,6 +1,7 @@
 # Project 2
 
 [![ESLint](https://github.com/Tinggaard/P2/actions/workflows/eslint.yml/badge.svg)](https://github.com/Tinggaard/P2/actions/workflows/eslint.yml)
+[![Node.js Unittest](https://github.com/Tinggaard/P2/actions/workflows/test.yml/badge.svg)](https://github.com/Tinggaard/P2/actions/workflows/test.yml)
 
 ## Installation
 
