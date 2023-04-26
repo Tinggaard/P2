@@ -30,7 +30,15 @@ const weights = [
 
 const task = new Task(weights.length, weights);
 // A perhaps scuffed way to calculate total subtasks..
-const totalSubtasks = new Obj('totalSubtasks', ((task.nodeCount - 1) * (task.nodeCount - 2)));
+function factorial(num) {
+  let result = 1;
+  for (let i = 2; i < num; i++) {
+    result *= i;
+  }
+  return result;
+}
+
+const totalSubtasks = new Obj('totalSubtasks', (factorial(weights.length) / factorial(weights.length - task.subtaskLength)));
 console.log(totalSubtasks);
 const iterator = task.getNextCombination();
 
