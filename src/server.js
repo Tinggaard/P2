@@ -40,6 +40,13 @@ const exServer = express()
   .use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
 
+// get weights api
+exServer.get('/', (req, res) => {
+  const weights2 = req.query.variableName;
+  res.send(`Received variable value: ${weights2}`);
+  console.log(weights2);
+});
+
 // Create a new instance of ws server
 const wsServer = new WebSocketServer({ server: exServer });
 

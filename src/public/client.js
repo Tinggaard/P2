@@ -72,3 +72,38 @@ rdyButton = document.querySelector('#connecterBtn');
 rdyButton.addEventListener('click', () => {
   rdySender();
 });
+
+// file upload
+function fileSender() {
+  const uploadFileEle = document.getElementById('fileInput');
+  if (uploadFileEle) {
+    const file = uploadFileEle.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const weights2 = event.target.result; // this is the weights
+
+      // Send weights to server using fetch() with a POST request
+      fetch('/server-weights', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({ weights2 }),
+      })
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log('Received response from server:', responseData);
+        // Do something with the response, if needed
+        })
+        .catch((error) => console.error(error));
+    };
+    reader.readAsText(file);
+  } else {
+    console.log('File input element not found.');
+  }
+}
+
+const fileBtn = document.querySelector('#fileSendButton');
+fileBtn.addEventListener('click', () => {
+  fileSender();
+});
