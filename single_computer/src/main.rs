@@ -29,7 +29,39 @@ fn main(){
     let weights = weights_result.unwrap();
     
     // Console logging the result of the shortest path
-    println!("{:?}", get_all_perm(&weights, weights.len()));
+    //println!("{:?}", get_all_perm(&weights, weights.len()));
+
+    let mut task = (1..weights.len()).collect::<Vec<usize>>();
+
+    let mut all_combs = Vec::new();
+    heaps(task.len(), &mut task, &mut all_combs);
+
+    let mut current_index = 0; // start node
+    let mut current; // current route
+    let mut shortest_index = 0; // index of shortest route
+    let mut shortest = usize::MAX; // shortest route
+
+    for (i, perm) in all_combs.iter().enumerate() {
+        current = 0;
+
+        // get the distance
+        for node in perm.iter() {
+            current += weights[current_index][*node];
+            current_index = *node;
+        }
+
+        // add back to start node
+        current += weights[current_index][0];
+
+        // save index and length if shortest
+        if current < shortest {
+            shortest = current;
+            shortest_index = i;
+        }
+    }
+
+    println!("{:?}", all_combs[shortest_index]);
+    println!("{:?}", shortest);
 
     // Ends timer and calcs elapsed time
     let end_time = Instant::now();
@@ -40,49 +72,21 @@ fn main(){
     
 }
 
-// Calculates the shortest distance for the given permutation
-fn calc_distance(weights: &[Vec<usize>], n: usize, perm: &[usize]) -> usize {
-    // Initializes the variable with the distance from the starting node to
-    // the first node and also the distance from the last node to the starting
-    // node.
-    let mut total_dist = weights[0][perm[0]] + weights[perm[n-1]][0];
 
-    // Calculates the distance of the permutations
-    for i in 0..n-1 {
-        total_dist += weights[perm[i]][perm[i+1]];
+fn heaps(k: usize, arr: &mut [usize], result: &mut Vec<Vec<usize>>) {
+    if k == 1 {
+        result.push(arr.to_vec());
+        return;
     }
     
-    total_dist
-}
+    heaps(k - 1, arr, result);
 
-// Function for creating all permutations and calculating the distance as well
-fn get_all_perm(weights: &Vec<Vec<usize>>, n: usize) -> (Vec<usize>, usize) {
-    
-    // Initializes an empty array
-    let mut perms_array: Vec<usize> = Vec::new();
-
-    // Creates a vector with length equal to number of nodes - 1
-    for x in 1..n {
-        perms_array.push(x);
-    }
-
-    // Initialization of variables
-    let mut current_dist = usize::MAX;
-    let mut ret_perm: Vec<usize> = Vec::new();
-    let perm_length = perms_array.len();
-
-    // Creates all permutations of perms_array and calls the calc_distance function
-    for perm in perms_array.iter().permutations(perms_array.len()).unique() {
-        // perm overrides to x instead of pointer, then sums it.
-        let perm: Vec<usize> = perm.into_iter().map(|&x| x).collect(); 
-        let next = calc_distance(weights, perm_length, &perm);
-        // Saving the shortest distance and the corresponding permutation
-        if current_dist > next {
-            ret_perm = perm;
-            current_dist = next;
+    for i in 0..k - 1 {
+        if k % 2 == 0 {
+            arr.swap(i, k-1);
+        } else {
+            arr.swap(0, k-1);
         }
+        heaps(k - 1, arr, result);
     }
-    
-    // Returns the shortest distance and the corresponding permutation
-    return (ret_perm, current_dist);
 }
