@@ -36,7 +36,7 @@ const iterator = task.getNextCombination();
 
 // express server implementation
 const app = express();
-app.use(express.static(path.join(dirname, 'public')))
+const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
 
 app.post('/server-weights', (req, res) => {
@@ -58,7 +58,7 @@ app.post('/server-weights', (req, res) => {
 });
 
 // Create a new instance of ws server
-const wsServer = new WebSocketServer({ server: app });
+const wsServer = new WebSocketServer({ server: appServer });
 
 wsServer.on('connection', (webSocket) => {
   // const available = new Obj('available', true);
