@@ -60,11 +60,20 @@
 
       .calculationDiv{
         background-color: #3A3B3C;
-        margin-left: 30%;
-        margin-right: 30%;
-        border-radius: 20px;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        border: 3px seagreen;
+        border-style: solid;
+        margin: auto;
+        padding: 10px;
+        width: 1000px;
+        height: 400px;
+        line-height: 1.5em;
+        overflow: scroll;
+        display: flex;
+        flex-direction: column-reverse;
+      }
+      
+      #totalSubtasks {
+        line-height: 3em;
       }
 
       .calculation {
