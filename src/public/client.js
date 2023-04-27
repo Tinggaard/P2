@@ -80,15 +80,15 @@ function fileSender() {
     const file = uploadFileEle.files[0];
     const reader = new FileReader();
     reader.onload = (event) => {
-      const weights2 = event.target.result; // this is the weights
-
+      const weights2 = JSON.parse(event.target.result); // parse the JSON data
+      console.log(weights2);
       // Send weights to server using fetch() with a POST request
       fetch('/server-weights', {
         method: 'POST',
         headers: {
-          'Content-type': 'application/json',
+          'Content-Type': 'application/json', // set the Content-Type header
         },
-        body: JSON.stringify({ weights2 }),
+        body: JSON.stringify(weights2), // send the parsed JSON data
       })
         .then((response) => response.json())
         .then((responseData) => {

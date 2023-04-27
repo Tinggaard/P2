@@ -35,20 +35,30 @@ console.log(totalSubtasks);
 const iterator = task.getNextCombination();
 
 // express server implementation
-const exServer = express()
-  // make the entire /public directory available
-  .use(express.static(path.join(dirname, 'public')))
+const app = express();
+app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
 
-// get weights api
-exServer.get('/', (req, res) => {
-  const weights2 = req.query.variableName;
-  res.send(`Received variable value: ${weights2}`);
-  console.log(weights2);
+app.post('/server-weights', (req, res) => {
+  let body = '';
+  req.on('data', (chunk) => {
+    body += chunk.toString(); // convert Buffer to string
+  });
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(body);
+      console.log('Received data:', data);
+      // Do something with the data here
+      res.json({ status: 'success' });
+    } catch (err) {
+      console.error('Error parsing JSON:', err);
+      res.status(400).json({ error: 'Invalid JSON data' });
+    }
+  });
 });
 
 // Create a new instance of ws server
-const wsServer = new WebSocketServer({ server: exServer });
+const wsServer = new WebSocketServer({ server: app });
 
 wsServer.on('connection', (webSocket) => {
   // const available = new Obj('available', true);
