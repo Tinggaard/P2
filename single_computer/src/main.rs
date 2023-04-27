@@ -42,6 +42,7 @@ fn main(){
     let mut shortest = usize::MAX; // shortest route
 
     for (i, perm) in all_combs.iter().enumerate() {
+        current_index = 0; 
         current = 0;
 
         // get the distance
