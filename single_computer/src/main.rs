@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use std::fs::File;
 use std::time::Instant;
 
@@ -36,13 +35,12 @@ fn main(){
     let mut all_combs = Vec::new();
     heaps(task.len(), &mut task, &mut all_combs);
 
-    let mut current_index = 0; // start node
     let mut current; // current route
     let mut shortest_index = 0; // index of shortest route
     let mut shortest = usize::MAX; // shortest route
 
     for (i, perm) in all_combs.iter().enumerate() {
-        current_index = 0; 
+        let mut current_index = 0; 
         current = 0;
 
         // get the distance
