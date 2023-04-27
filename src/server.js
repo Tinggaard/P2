@@ -14,25 +14,29 @@ let iterator;
 let totalSubtasks;
 let task;
 let fileWeightsObj;
-// express server implementation
+let fileWeights;
+// Express server implementation
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
-let fileWeights;
+// Where the uploaded JSON file with weights is posted to
 app.post('/server-weights', (req, res) => {
   let body = '';
+  // Stringifies and concatenates the received data from the uploaded JSON file
   req.on('data', (chunk) => {
     body += chunk.toString();
   });
   req.on('end', () => {
+    // When a file is uploaded this runs :)
     try {
-      // this is where it comes in
+      // Objectifizing the uploaded problem.
       fileWeights = JSON.parse(body);
+      // Creating an object of the weights to be send to the client
       fileWeightsObj = new Obj('weights', fileWeights.weights);
+      // Creates the main task
       task = new Task(fileWeightsObj.data.length, fileWeights.weights);
-      console.log(fileWeightsObj);
-      // A perhaps scuffed way to calculate total subtasks..
       totalSubtasks = new Obj('totalSubtasks', ((task.nodeCount - 1) * (task.nodeCount - 2)));
+      // Starts creating subtasks/static routes from the main task
       iterator = task.getNextCombination();
     } catch (err) {
       console.error('Error parsing JSON:', err);
@@ -40,24 +44,6 @@ app.post('/server-weights', (req, res) => {
     }
   });
 });
-
-// const weights = [
-//   [0, 2, 3, 4, 5, 7, 7, 3, 0, 3, 6, 4, 5, 2],
-//   [4, 0, 2, 1, 3, 8, 7, 3, 0, 3, 6, 4, 5, 2],
-//   [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4, 5, 2],
-//   [8, 1, 100, 0, 7, 2, 7, 3, 0, 3, 6, 4, 5, 2],
-//   [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 6, 4, 5, 2],
-//   [7, 3, 0, 3, 6, 0, 7, 3, 0, 3, 6, 4, 5, 2],
-//   [0, 2, 3, 4, 5, 7, 0, 3, 0, 3, 6, 4, 5, 2],
-//   [4, 0, 2, 1, 3, 8, 7, 0, 0, 3, 6, 4, 5, 2],
-//   [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4, 5, 2],
-//   [8, 1, 100, 0, 7, 2, 7, 3, 3, 0, 6, 4, 5, 2],
-//   [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 0, 4, 5, 2],
-//   [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 0, 5, 2],
-//   [7, 3, 0, 3, 6, 0, 7, 3, 0, 3, 6, 4, 0, 2],
-//   [0, 2, 3, 4, 5, 7, 0, 3, 0, 3, 6, 4, 5, 0],
-// ];
-// fileweights is an object so we have to get the length somehow :)
 
 // Create a new instance of ws server
 const wsServer = new WebSocketServer({ server: appServer });

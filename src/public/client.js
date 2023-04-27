@@ -77,11 +77,11 @@ rdyButton.addEventListener('click', () => {
 function fileSender() {
   const uploadFileEle = document.getElementById('fileInput');
   if (uploadFileEle) {
+    // gets the file
     const file = uploadFileEle.files[0];
     const reader = new FileReader();
     reader.onload = (event) => {
-      const weights2 = JSON.parse(event.target.result); // parse the JSON data
-      console.log(weights2);
+      const weights2 = JSON.parse(event.target.result); // parse JSON data
       // Send weights to server using fetch() with a POST request
       fetch('/server-weights', {
         method: 'POST',
@@ -93,7 +93,6 @@ function fileSender() {
         .then((response) => response.json())
         .then((responseData) => {
           console.log('Received response from server:', responseData);
-        // Do something with the response, if needed
         })
         .catch((error) => console.error(error));
     };
