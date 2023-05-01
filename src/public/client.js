@@ -74,19 +74,17 @@ rdyButton.addEventListener('click', () => {
 });
 
 // file upload
-function fileSender(file, fileInput) {
-  if (fileInput) {
-    // gets the file
+function fileSender(file) {
+  if (file) { // Check if file exists
     const reader = new FileReader();
     reader.onload = (event) => {
-      const weights2 = JSON.parse(event.target.result); // parse JSON data
-      // Send weights to server using fetch() with a POST request
+      const weights2 = JSON.parse(event.target.result);
       fetch('/server-weights', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(weights2), // send the parsed JSON data
+        body: JSON.stringify(weights2),
       })
         .then((response) => response.json())
         .then((responseData) => {
@@ -96,27 +94,27 @@ function fileSender(file, fileInput) {
     };
     reader.readAsText(file);
   } else {
-    console.log('File input element not found.');
+    console.log('File not found.');
   }
 }
 
-function fileUpdate(file, fileInput) {
-  const fileInputLabel = document.getElementById('fileInputLabel');
-
-  if (fileInput.files.length > 0) {
-    fileInputLabel.textContent = file;
+// Function to update the label of the file input element
+function fileUpdate(file) {
+  const fileInputLabel = document.querySelector('#fileInputLabel');
+  if (file.files.length > 0) {
+    const fileName = file.files[0].name;
+    fileInputLabel.textContent = fileName;
+    fileSender(file.files[0]); // Call fileSender with the selected file
   } else {
     fileInputLabel.textContent = 'Upload';
   }
 }
+
+// Add event listener to the file input element
 const fileInputElement = document.getElementById('fileInput');
 fileInputElement.addEventListener('change', () => {
-  const uploadFileEle = document.getElementById('fileInput');
-  const file = uploadFileEle.files[0];
-  fileUpdate(file, uploadFileEle);
-  fileSender(file, uploadFileEle);
+  fileUpdate(fileInputElement);
 });
-
 // const fileBtn = document.querySelector('#fileSendButton');
 // fileBtn.addEventListener('click', () => {
 //   fileSender();
