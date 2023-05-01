@@ -57,18 +57,37 @@ function addWebSocketEventListeners() {
   };
 }
 
-function rdySender() {
-  if (rdyButton.value === 'Connect') {
-    websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
-    console.log('connect');
-    rdyButton.value = 'Disconnect';
+function serverWeightCheck() {
+  return fetch('/weights')
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log('Received response from server:', responseData);
+      if (responseData === true) {
+        return true;
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.error(error);
+      return false;
+    });
+}
 
-    // Add WebSocket event listeners when connecting
-    addWebSocketEventListeners();
-  } else {
-    console.log('disconnect');
-    websocket.close();
-    rdyButton.value = 'Connect';
+function rdySender() {
+  const weightCheck = serverWeightCheck();
+  if (weightCheck) {
+    if (rdyButton.value === 'Connect') {
+      websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
+      console.log('connect');
+      rdyButton.value = 'Disconnect';
+
+      // Add WebSocket event listeners when connecting
+      addWebSocketEventListeners();
+    } else {
+      console.log('disconnect');
+      websocket.close();
+      rdyButton.value = 'Connect';
+    }
   }
 }
 

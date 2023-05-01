@@ -14,7 +14,7 @@ let iterator;
 let totalSubtasks;
 let task;
 let fileWeightsObj;
-let fileWeights;
+let fileWeights = null;
 // Express server implementation
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
@@ -27,7 +27,12 @@ function factorial(num) {
   }
   return result;
 }
-
+// her er den som tjekker om der er weights på serveren, ved ikke om den tjekker om det er legit
+app.get('/weights', (req, res) => {
+  if (fileWeights != null) { // burde nok tjekke om objektet er empty?
+    res.json(true);
+  }
+});
 
 // Where the uploaded JSON file with weights is posted to
 app.post('/server-weights', (req, res) => {
@@ -57,7 +62,6 @@ app.post('/server-weights', (req, res) => {
 
 // Create a new instance of ws server
 const wsServer = new WebSocketServer({ server: appServer });
-
 wsServer.on('connection', (webSocket) => {
   // const available = new Obj('available', true);
   const id = new Obj('id', uuidv4());
@@ -70,10 +74,13 @@ wsServer.on('connection', (webSocket) => {
   webSocket.send(JSON.stringify(totalSubtasks));
 
   webSocket.send(JSON.stringify(fileWeightsObj));
-
-  let problem = iterator.next();
-
-  if (!problem.done) {
+  // tjekker om iterator er true, for ikke at kalde .next
+  let problem;
+  if (iterator) {
+    problem = iterator.next();
+  }
+  // tjekker om problemet findes
+  if (problem && !problem.done) {
     const obj = new Obj('calc', problem.value);
     webSocket.send(JSON.stringify(obj));
   }
@@ -93,7 +100,7 @@ wsServer.on('connection', (webSocket) => {
           task.shortestSum = data.data.routeLength;
         }
         problem = iterator.next(); // send new problem
-        if (!problem.done) {
+        if (problem && !problem.done) {
           const obj = new Obj('calc', problem.value);
           webSocket.send(JSON.stringify(obj));
         }
@@ -112,7 +119,9 @@ wsServer.on('connection', (webSocket) => {
   // Print to console on client disconnected
   webSocket.on('close', () => {
     console.log(`${id.data}: *Disconnected*`);
-    task.unfinished.push(problem.value); // add permutation back to task class
+    if (problem) { // tjekker om problemet findes
+      task.unfinished.push(problem.value); // add permutation back to task class
+    }
     // Print number of clients connected
     console.log('Connected clients:', wsServer.clients.size);
   });
