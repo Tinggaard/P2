@@ -6,10 +6,10 @@
   padding: 10px;
 }
 
-
 .topNavBar > div {
   margin: 10px;
 }
+
 .topNavBar > div > button {
   background-color: transparent;
   background-repeat: no-repeat;
@@ -24,12 +24,14 @@
 .topNavBar > div > button:hover {
   text-decoration: underline;
 }
+
 .topNavUnderline {
   border: solid;
   border-width: 1px;
   border-color: lightgray;
   margin-top: 5px;
 }
+
 .connecterBtnClass {
   background-image: linear-gradient(to top, #242526, #3A3B3C );        
   border-radius: 10px;
@@ -61,13 +63,27 @@
   text-align: right;
 }
 
-.calculationDiv{
+.calculationDiv {
   background-color: #3A3B3C;
   margin-left: 30%;
   margin-right: 30%;
   border-radius: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
+  border: 3px seagreen;
+  border-style: solid;
+  margin: auto;
+  padding: 10px;
+  width: 1000px;
+  height: 400px;
+  line-height: 1.5em;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+#totalSubtasks {
+  line-height: 3em;
 }
 
 .calculation {
@@ -80,6 +96,11 @@
 
 #time {
   text-align: center;
+}
+
+#finalResult {
+  text-align: center;
+  font-size: 25px;
 }
 
 .progressBar {
@@ -96,9 +117,11 @@ body {
   margin: 0;
   font-family:'Courier New', Courier, monospace;
 }
+
 p {
   color: White;
 }
+
 button {
   color: White;
 }

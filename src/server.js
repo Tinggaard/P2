@@ -19,6 +19,16 @@ let fileWeights;
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
+// A perhaps scuffed way to calculate total subtasks..
+function factorial(num) {
+  let result = 1;
+  for (let i = 2; i < num; i++) {
+    result *= i;
+  }
+  return result;
+}
+
+
 // Where the uploaded JSON file with weights is posted to
 app.post('/server-weights', (req, res) => {
   let body = '';
@@ -30,12 +40,12 @@ app.post('/server-weights', (req, res) => {
     // When a file is uploaded this runs :)
     try {
       // Objectifizing the uploaded problem.
-      fileWeights = JSON.parse(body);
+      fileWeights = JSON.parse(body).weights;
       // Creating an object of the weights to be send to the client
-      fileWeightsObj = new Obj('weights', fileWeights.weights);
+      fileWeightsObj = new Obj('weights', fileWeights);
       // Creates the main task
-      task = new Task(fileWeightsObj.data.length, fileWeights.weights);
-      totalSubtasks = new Obj('totalSubtasks', ((task.nodeCount - 1) * (task.nodeCount - 2)));
+      task = new Task(fileWeights.length, fileWeights);
+      totalSubtasks = new Obj('totalSubtasks', (factorial(fileWeights.length) / factorial(fileWeights.length - task.subtaskLength)));
       // Starts creating subtasks/static routes from the main task
       iterator = task.getNextCombination();
     } catch (err) {
@@ -87,7 +97,11 @@ wsServer.on('connection', (webSocket) => {
           const obj = new Obj('calc', problem.value);
           webSocket.send(JSON.stringify(obj));
         }
-        console.log(`shortest route:  ${task.shortestPath}  |   shortest route length ${task.shortestSum}`);
+        // If the entire task is completed output the shortest path in the HTML file.
+        if (finishedSubtasks === totalSubtasks.data) {
+          const obj = new Obj('finalResult', task);
+          webSocket.send(JSON.stringify(obj));
+        }
         break;
       // do nothing
       default:
