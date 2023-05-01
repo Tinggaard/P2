@@ -5,6 +5,8 @@ let websocket;
 let rdyButton;
 let weights;
 
+let totalSubtasks;
+
 function addWebSocketEventListeners() {
   websocket.onopen = () => {
     const connectMsg = 'connect message';
@@ -39,12 +41,15 @@ function addWebSocketEventListeners() {
         break;
       case 'progress':
         selector = document.querySelector('#progress');
-        selector.innerHTML = data.data;
+        selector.innerHTML = `${data.data} / ${totalSubtasks}`;
+        selector = document.querySelector('#progressBar');
+        selector.style.width = `${(data.data / totalSubtasks) * 100}%`;
+        //selector.animate({ width: `${(data.data / totalSubtasks) * 100}%` }, { duration: 10000 });
+        //selector.animate({ width: data.data }, { duration: 1000 });
         break;
       case 'totalSubtasks':
         console.log('received on client side: ', data.data);
-        selector = document.querySelector('#totalSubtasks');
-        selector.innerHTML = data.data;
+        totalSubtasks = 1320;
         break;
       // do nothing
       default:
