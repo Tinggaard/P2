@@ -89,7 +89,7 @@ function rdySender() {
       console.log('disconnect');
       websocket.close();
       rdyButton.value = 'Connect';
-      connected = false; 
+      connected = false;
     }
   }
 }
