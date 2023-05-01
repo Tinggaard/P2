@@ -1,167 +1,164 @@
-      .topNavBar {
-        display: flex;
-        justify-content: space-between;
-        background-color: #242526;
-        margin-bottom: 15px;
-        padding: 10px;
-      }
+.topNavBar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #242526;
+  margin-bottom: 15px;
+  padding: 10px;
+}
 
-      
-      .topNavBar > div {
-        margin: 10px;
-      }
-      .topNavBar > div > button {
-        background-color: transparent;
-        background-repeat: no-repeat;
-        border: none;
-        cursor: pointer;
-        overflow: hidden;
-        outline: none;
-        font-size: 24px;
-        font-family:'Courier New', Courier, monospace;
-      }
-      
-      .topNavBar > div > button:hover {
-        text-decoration: underline;
-      }
-      .topNavUnderline {
-        border: solid;
-        border-width: 1px;
-        border-color: lightgray;
-        margin-top: 5px;
-      }
-      .connecterBtnClass {
-        background-image: linear-gradient(to top, #242526, #3A3B3C );        
-        border-radius: 10px;
-        width: 200px;
-        height: 30px;
-        border: none;
-        cursor: pointer;
-        color: White;
-        font-family:'Courier New', Courier, monospace;
-      }
 
-      .connecterBtnClass:hover {
-        background-image: linear-gradient(to top, #3A3B3C, #242526 );     
-      }
-      
-      .connecterBtnClassDiv {
-        text-align: center;
-      }
-      
-      .homeButton {
-        text-align: left;
-      }
+.topNavBar > div {
+  margin: 10px;
+}
+.topNavBar > div > button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-size: 24px;
+  font-family:'Courier New', Courier, monospace;
+}
 
-      .statsButton {
-        text-align: center;
-      }
+.topNavBar > div > button:hover {
+  text-decoration: underline;
+}
+.topNavUnderline {
+  border: solid;
+  border-width: 1px;
+  border-color: lightgray;
+  margin-top: 5px;
+}
+.connecterBtnClass {
+  background-image: linear-gradient(to top, #242526, #3A3B3C );        
+  border-radius: 10px;
+  width: 200px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  color: White;
+  font-family:'Courier New', Courier, monospace;
+}
 
-      .userButton {
-        text-align: right;
-      }
+.connecterBtnClass:hover {
+  background-image: linear-gradient(to top, #3A3B3C, #242526 );     
+}
 
-      .calculationDiv{
-        background-color: #3A3B3C;
-        margin-left: 30%;
-        margin-right: 30%;
-        border-radius: 20px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-      }
+.connecterBtnClassDiv {
+  text-align: center;
+}
 
-      .calculation {
-        text-align: center;
-      }
+.homeButton {
+  text-align: left;
+}
 
-      #id {
-        text-align: center;
-      }
+.statsButton {
+  text-align: center;
+}
 
-      #time {
-        text-align: center;
-      }
+.userButton {
+  text-align: right;
+}
 
-      .progressBar {
-        text-align: center;
-      }
+.calculationDiv{
+  background-color: #3A3B3C;
+  margin-left: 30%;
+  margin-right: 30%;
+  border-radius: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 
-      .progressBar > p{
-        text-align: center;
-        display: inline;
-      }
-      
-      body {
-        background-color: #18191A;
-        margin: 0;
-        font-family:'Courier New', Courier, monospace;
-      }
-      p {
-        color: White;
-      }
-      button {
-        color: White;
-      }
+.calculation {
+  text-align: center;
+}
 
-      .uploadDiv{
-        background-color: white;
-      }
+#id {
+  text-align: center;
+}
 
-      .fileInput {
-        background-color: transparent;
-        background-repeat: no-repeat;
-        border: none;
-        cursor: pointer;
-        overflow: hidden;
-        outline: none;
-        font-size: 24px;
-        font-family: 'Courier New', Courier, monospace;
-        color: white;
-      }
+#time {
+  text-align: center;
+}
 
-      .fileInput:hover {
-        text-decoration: underline;
-      }
+.progressBar {
+  text-align: center;
+}
 
-      .fileSendButtonClass {
-        background-color: transparent;
-        background-repeat: no-repeat;
-        border: none;
-        cursor: pointer;
-        overflow: hidden;
-        outline: none;
-        font-size: 24px;
-        font-family: 'Courier New', Courier, monospace;
-        color: white;
-      }
-      
-      .fileSendButtonClass:hover {
-        text-decoration: underline;
-      }
-      
-      .fileInputDiv {
-        text-align: right;
-      }
+.progressBar > p{
+  text-align: center;
+  display: inline;
+}
 
-      .hidden {
-        display: none;
-      }
+body {
+  background-color: #18191A;
+  margin: 0;
+  font-family:'Courier New', Courier, monospace;
+}
+p {
+  color: White;
+}
+button {
+  color: White;
+}
 
-      .uploadButton {
-        background-color: transparent;
-        background-repeat: no-repeat;
-        border: none;
-        cursor: pointer;
-        overflow: hidden;
-        outline: none;
-        font-size: 24px;
-        font-family: 'Courier New', Courier, monospace;
-        color: white;
-      }
-      
-      .uploadButton:hover {
-        text-decoration: underline;
-      }
-      
-      
+.uploadDiv{
+  background-color: white;
+}
 
+.fileInput {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-size: 24px;
+  font-family: 'Courier New', Courier, monospace;
+  color: white;
+}
+
+.fileInput:hover {
+  text-decoration: underline;
+}
+
+.fileSendButtonClass {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-size: 24px;
+  font-family: 'Courier New', Courier, monospace;
+  color: white;
+}
+
+.fileSendButtonClass:hover {
+  text-decoration: underline;
+}
+
+.fileInputDiv {
+  text-align: right;
+}
+
+.hidden {
+  display: none;
+}
+
+.uploadButton {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-size: 24px;
+  font-family: 'Courier New', Courier, monospace;
+  color: white;
+}
+
+.uploadButton:hover {
+  text-decoration: underline;
+}
