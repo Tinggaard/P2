@@ -4,7 +4,7 @@ import { Obj, subtaskHandler } from './provider.js';
 let websocket;
 let rdyButton;
 let weights;
-
+let correctInput = false;
 function addWebSocketEventListeners() {
   websocket.onopen = () => {
     const connectMsg = 'connect message';
@@ -80,13 +80,14 @@ function rdySender() {
       websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
       console.log('connect');
       rdyButton.value = 'Disconnect';
-
+      correctInput = true;
       // Add WebSocket event listeners when connecting
       addWebSocketEventListeners();
     } else {
       console.log('disconnect');
       websocket.close();
       rdyButton.value = 'Connect';
+      correctInput = false;
     }
   }
 }
@@ -133,7 +134,6 @@ function fileUpdate(file) {
   }
 }
 
-let correctInput = false;
 function fileChecker(file) {
   const fileName = file.files[0].name;
   if (fileName.endsWith('.json')) {
@@ -142,12 +142,15 @@ function fileChecker(file) {
     alert('Please select a json file');
   }
 }
+const connected = false;
 // Add event listener to the file input element
 const fileInputElement = document.getElementById('fileInput');
 fileInputElement.addEventListener('change', () => {
-  fileChecker(fileInputElement);
-  if (correctInput) {
-    fileUpdate(fileInputElement);
+  if (!connected) {
+    fileChecker(fileInputElement);
+    if (correctInput) {
+      fileUpdate(fileInputElement);
+    }
   }
   correctInput = false; // reset the stuff :)
 });
