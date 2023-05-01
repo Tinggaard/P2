@@ -90,7 +90,7 @@ wsServer.on('connection', (webSocket) => {
           webSocket.send(JSON.stringify(obj));
         }
         // If the entire task is completed output the shortest path in the HTML file.
-        if (finishedSubtasks === totalSubtasks.data){
+        if (finishedSubtasks === totalSubtasks.data) {
           const obj = new Obj('finalResult', task);
           webSocket.send(JSON.stringify(obj));
         }
