@@ -113,11 +113,13 @@ function fileUpdate() {
     fileInputLabel.textContent = 'Upload';
   }
 }
-
 const fileInputElement = document.getElementById('fileInput');
-fileInputElement.addEventListener('change', fileUpdate);
-
-const fileBtn = document.querySelector('#fileSendButton');
-fileBtn.addEventListener('click', () => {
+fileInputElement.addEventListener('change', () => {
+  fileUpdate();
   fileSender();
 });
+
+// const fileBtn = document.querySelector('#fileSendButton');
+// fileBtn.addEventListener('click', () => {
+//   fileSender();
+// });
