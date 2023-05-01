@@ -8,25 +8,17 @@ import { Obj, Task } from './control.js';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
-
+// initialization of variables
 let finishedSubtasks = 0;
-
-const weights = [
-  [0, 2, 3, 4, 5, 7, 7, 3, 5, 3, 6, 4],
-  [4, 0, 2, 1, 3, 8, 7, 3, 0, 3, 6, 4],
-  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4],
-  [8, 1, 100, 0, 7, 2, 7, 3, 0, 3, 6, 2],
-  [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 6, 4],
-  [7, 3, 0, 3, 6, 0, 7, 3, 0, 3, 6, 4],
-  [0, 2, 3, 4, 5, 7, 0, 3, 0, 3, 6, 4],
-  [4, 0, 2, 1, 3, 8, 7, 0, 0, 3, 6, 4],
-  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4],
-  [8, 1, 100, 0, 7, 2, 7, 3, 3, 0, 6, 2],
-  [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 0, 4],
-  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 0],
-];
-
-const task = new Task(weights.length, weights);
+let iterator;
+let totalSubtasks;
+let task;
+let fileWeightsObj;
+let fileWeights;
+// Express server implementation
+const app = express();
+const appServer = app.use(express.static(path.join(dirname, 'public')))
+  .listen(3000, () => console.log('Server running at http://localhost:3000'));
 // A perhaps scuffed way to calculate total subtasks..
 function factorial(num) {
   let result = 1;
@@ -36,18 +28,35 @@ function factorial(num) {
   return result;
 }
 
-const totalSubtasks = new Obj('totalSubtasks', (factorial(weights.length) / factorial(weights.length - task.subtaskLength)));
-console.log(totalSubtasks);
-const iterator = task.getNextCombination();
 
-// express server implementation
-const exServer = express()
-  // make the entire /public directory available
-  .use(express.static(path.join(dirname, 'public')))
-  .listen(3000, () => console.log('Server running at http://localhost:3000'));
+// Where the uploaded JSON file with weights is posted to
+app.post('/server-weights', (req, res) => {
+  let body = '';
+  // Stringifies and concatenates the received data from the uploaded JSON file
+  req.on('data', (chunk) => {
+    body += chunk.toString();
+  });
+  req.on('end', () => {
+    // When a file is uploaded this runs :)
+    try {
+      // Objectifizing the uploaded problem.
+      fileWeights = JSON.parse(body).weights;
+      // Creating an object of the weights to be send to the client
+      fileWeightsObj = new Obj('weights', fileWeights);
+      // Creates the main task
+      task = new Task(fileWeights.length, fileWeights);
+      totalSubtasks = new Obj('totalSubtasks', (factorial(fileWeights.length) / factorial(fileWeights.length - task.subtaskLength)));
+      // Starts creating subtasks/static routes from the main task
+      iterator = task.getNextCombination();
+    } catch (err) {
+      console.error('Error parsing JSON:', err);
+      res.status(400).json({ error: 'Invalid JSON data' });
+    }
+  });
+});
 
 // Create a new instance of ws server
-const wsServer = new WebSocketServer({ server: exServer });
+const wsServer = new WebSocketServer({ server: appServer });
 
 wsServer.on('connection', (webSocket) => {
   // const available = new Obj('available', true);
@@ -60,8 +69,7 @@ wsServer.on('connection', (webSocket) => {
   webSocket.send(JSON.stringify(id));
   webSocket.send(JSON.stringify(totalSubtasks));
 
-  const weightsObj = new Obj('weights', weights);
-  webSocket.send(JSON.stringify(weightsObj));
+  webSocket.send(JSON.stringify(fileWeightsObj));
 
   let problem = iterator.next();
 

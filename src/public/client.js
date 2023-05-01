@@ -76,3 +76,59 @@ rdyButton = document.querySelector('#connecterBtn');
 rdyButton.addEventListener('click', () => {
   rdySender();
 });
+
+// file upload
+function fileSender(file) {
+  if (file) { // Check if file exists
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const weights2 = JSON.parse(event.target.result);
+      fetch('/server-weights', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(weights2),
+      })
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log('Received response from server:', responseData);
+        })
+        .catch((error) => console.error(error));
+    };
+    reader.readAsText(file);
+  } else {
+    console.log('File not found.');
+  }
+}
+
+// Function to update the label of the file input element
+function fileUpdate(file) {
+  const fileInputLabel = document.querySelector('#fileInputLabel');
+  if (file.files.length > 0) {
+    const fileName = file.files[0].name;
+    fileInputLabel.textContent = fileName;
+    fileSender(file.files[0]); // Call fileSender with the selected file
+  } else {
+    fileInputLabel.textContent = 'Upload';
+  }
+}
+
+let correctInput = false;
+function fileChecker(file) {
+  const fileName = file.files[0].name;
+  if (fileName.endsWith('.json')) {
+    correctInput = true;
+  } else {
+    alert('Please select a json file');
+  }
+}
+// Add event listener to the file input element
+const fileInputElement = document.getElementById('fileInput');
+fileInputElement.addEventListener('change', () => {
+  fileChecker(fileInputElement);
+  if (correctInput) {
+    fileUpdate(fileInputElement);
+  }
+  correctInput = false; // reset the stuff :)
+});

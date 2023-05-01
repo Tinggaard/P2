@@ -1,115 +1,187 @@
-      .topNavBar {
-        display: grid;
-        grid-auto-flow: column;
-        grid-template-columns: 33fr 33fr 33fr ;
-        background-color: #242526;
-        margin-bottom: 15px;
-      }
-      .topNavBar > div {
-        margin: 10px;
-      }
-      .topNavBar > div > button {
-        background-color: transparent;
-        background-repeat: no-repeat;
-        border: none;
-        cursor: pointer;
-        overflow: hidden;
-        outline: none;
-        font-size: 24px;
-        font-family:'Courier New', Courier, monospace;
-      }
-      .topNavBar > div > button:hover {
-        text-decoration: underline;
-      }
-      .topNavUnderline {
-        border: solid;
-        border-width: 1px;
-        border-color: lightgray;
-        margin-top: 5px;
-      }
-      .connecterBtnClass {
-        background-image: linear-gradient(to top, #242526, #3A3B3C );        
-        border-radius: 10px;
-        width: 200px;
-        height: 30px;
-        border: none;
-        cursor: pointer;
-        color: White;
-        font-family:'Courier New', Courier, monospace;
-      }
+.topNavBar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #242526;
+  margin-bottom: 15px;
+  padding: 10px;
+}
 
-      .connecterBtnClass:hover {
-        background-image: linear-gradient(to top, #3A3B3C, #242526 );     
-      }
-      
-      .connecterBtnClassDiv {
-        text-align: center;
-      }
-      
-      .homeButton {
-        text-align: left;
-      }
+.topNavBar > div {
+  margin: 10px;
+}
 
-      .statsButton {
-        text-align: center;
-      }
+.topNavBar > div > button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-size: 24px;
+  font-family:'Courier New', Courier, monospace;
+}
 
-      .userButton {
-        text-align: right;
-      }
+.topNavBar > div > button:hover {
+  text-decoration: underline;
+}
 
-      .calculationDiv{
-        background-color: #3A3B3C;
-        border: 3px seagreen;
-        border-style: solid;
-        margin: auto;
-        padding: 10px;
-        width: 1000px;
-        height: 400px;
-        line-height: 1.5em;
-        overflow: scroll;
-        display: flex;
-        flex-direction: column-reverse;
-      }
-      
-      #totalSubtasks {
-        line-height: 3em;
-      }
+.topNavUnderline {
+  border: solid;
+  border-width: 1px;
+  border-color: lightgray;
+  margin-top: 5px;
+}
 
-      .calculation {
-        text-align: center;
-      }
+.connecterBtnClass {
+  background-image: linear-gradient(to top, #242526, #3A3B3C );        
+  border-radius: 10px;
+  width: 200px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  color: White;
+  font-family:'Courier New', Courier, monospace;
+}
 
-      #id {
-        text-align: center;
-      }
+.connecterBtnClass:hover {
+  background-image: linear-gradient(to top, #3A3B3C, #242526 );     
+}
 
-      #time {
-        text-align: center;
-      }
+.connecterBtnClassDiv {
+  text-align: center;
+}
 
-      .progressBar {
-        text-align: center;
-      }
+.homeButton {
+  text-align: left;
+}
 
-      .progressBar > p{
-        text-align: center;
-        display: inline;
-      }
-      #finalResult {
-        text-align: center;
-        font-size: 25px;
-      }
-      body {
-        background-color: #18191A;
-        margin: 0;
-        font-family:'Courier New', Courier, monospace;
-      }
-      p {
-        color: White;
-      }
-      button {
-        color: White;
-      }
+.statsButton {
+  text-align: center;
+}
 
+.userButton {
+  text-align: right;
+}
 
+.calculationDiv {
+  background-color: #3A3B3C;
+  margin-left: 30%;
+  margin-right: 30%;
+  border-radius: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 3px seagreen;
+  border-style: solid;
+  margin: auto;
+  padding: 10px;
+  width: 1000px;
+  height: 400px;
+  line-height: 1.5em;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+#totalSubtasks {
+  line-height: 3em;
+}
+
+.calculation {
+  text-align: center;
+}
+
+#id {
+  text-align: center;
+}
+
+#time {
+  text-align: center;
+}
+
+#finalResult {
+  text-align: center;
+  font-size: 25px;
+}
+
+.progressBar {
+  text-align: center;
+}
+
+.progressBar > p{
+  text-align: center;
+  display: inline;
+}
+
+body {
+  background-color: #18191A;
+  margin: 0;
+  font-family:'Courier New', Courier, monospace;
+}
+
+p {
+  color: White;
+}
+
+button {
+  color: White;
+}
+
+.uploadDiv{
+  background-color: white;
+}
+
+.fileInput {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-size: 24px;
+  font-family: 'Courier New', Courier, monospace;
+  color: white;
+}
+
+.fileInput:hover {
+  text-decoration: underline;
+}
+
+.fileSendButtonClass {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-size: 24px;
+  font-family: 'Courier New', Courier, monospace;
+  color: white;
+}
+
+.fileSendButtonClass:hover {
+  text-decoration: underline;
+}
+
+.fileInputDiv {
+  text-align: right;
+}
+
+.hidden {
+  display: none;
+}
+
+.uploadButton {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-size: 24px;
+  font-family: 'Courier New', Courier, monospace;
+  color: white;
+}
+
+.uploadButton:hover {
+  text-decoration: underline;
+}
