@@ -84,7 +84,7 @@ function fileSender(file, fileInput) {
       fetch('/server-weights', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // set the Content-Type header
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(weights2), // send the parsed JSON data
       })
