@@ -12,20 +12,18 @@ const dirname = path.dirname(filename);
 let finishedSubtasks = 0;
 
 const weights = [
-  [0, 2, 3, 4, 5, 7, 7, 3, 0, 3, 6, 4, 5, 2],
-  [4, 0, 2, 1, 3, 8, 7, 3, 0, 3, 6, 4, 5, 2],
-  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4, 5, 2],
-  [8, 1, 100, 0, 7, 2, 7, 3, 0, 3, 6, 4, 5, 2],
-  [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 6, 4, 5, 2],
-  [7, 3, 0, 3, 6, 0, 7, 3, 0, 3, 6, 4, 5, 2],
-  [0, 2, 3, 4, 5, 7, 0, 3, 0, 3, 6, 4, 5, 2],
-  [4, 0, 2, 1, 3, 8, 7, 0, 0, 3, 6, 4, 5, 2],
-  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4, 5, 2],
-  [8, 1, 100, 0, 7, 2, 7, 3, 3, 0, 6, 4, 5, 2],
-  [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 0, 4, 5, 2],
-  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 0, 5, 2],
-  [7, 3, 0, 3, 6, 0, 7, 3, 0, 3, 6, 4, 0, 2],
-  [0, 2, 3, 4, 5, 7, 0, 3, 0, 3, 6, 4, 5, 0],
+  [0, 2, 3, 4, 5, 7, 7, 3, 5, 3, 6, 4],
+  [4, 0, 2, 1, 3, 8, 7, 3, 0, 3, 6, 4],
+  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4],
+  [8, 1, 100, 0, 7, 2, 7, 3, 0, 3, 6, 2],
+  [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 6, 4],
+  [7, 3, 0, 3, 6, 0, 7, 3, 0, 3, 6, 4],
+  [0, 2, 3, 4, 5, 7, 0, 3, 0, 3, 6, 4],
+  [4, 0, 2, 1, 3, 8, 7, 0, 0, 3, 6, 4],
+  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 4],
+  [8, 1, 100, 0, 7, 2, 7, 3, 3, 0, 6, 2],
+  [1, 9, 8, 5, 0, 7, 7, 3, 0, 3, 0, 4],
+  [7, 3, 0, 3, 6, 4, 7, 3, 0, 3, 6, 0],
 ];
 
 const task = new Task(weights.length, weights);
@@ -91,7 +89,11 @@ wsServer.on('connection', (webSocket) => {
           const obj = new Obj('calc', problem.value);
           webSocket.send(JSON.stringify(obj));
         }
-        console.log(`shortest route:  ${task.shortestPath}  |   shortest route length ${task.shortestSum}`);
+        // If the entire task is completed output the shortest path in the HTML file.
+        if(finishedSubtasks === totalSubtasks.data){
+          const obj = new Obj('finalResult', task);
+          webSocket.send(JSON.stringify(obj));
+        }
         break;
       // do nothing
       default:

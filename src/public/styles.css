@@ -96,7 +96,10 @@
         text-align: center;
         display: inline;
       }
-      
+      #finalResult {
+        text-align: center;
+        font-size: 25px;
+      }
       body {
         background-color: #18191A;
         margin: 0;
