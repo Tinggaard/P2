@@ -5,6 +5,8 @@ let websocket;
 let rdyButton;
 let weights;
 let correctInput = false;
+let connected = false; // connection checker for file upload
+
 function addWebSocketEventListeners() {
   websocket.onopen = () => {
     const connectMsg = 'connect message';
@@ -80,14 +82,14 @@ function rdySender() {
       websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
       console.log('connect');
       rdyButton.value = 'Disconnect';
-      correctInput = true;
+      connected = true;
       // Add WebSocket event listeners when connecting
       addWebSocketEventListeners();
     } else {
       console.log('disconnect');
       websocket.close();
       rdyButton.value = 'Connect';
-      correctInput = false;
+      connected = false; 
     }
   }
 }
@@ -142,11 +144,12 @@ function fileChecker(file) {
     alert('Please select a json file');
   }
 }
-const connected = false;
+
 // Add event listener to the file input element
 const fileInputElement = document.getElementById('fileInput');
 fileInputElement.addEventListener('change', () => {
-  if (!connected) {
+  if (!connected) { // cannot upload file while connected
+    console.log('uploading file');
     fileChecker(fileInputElement);
     if (correctInput) {
       fileUpdate(fileInputElement);
