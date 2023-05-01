@@ -44,6 +44,7 @@ app.post('/server-weights', (req, res) => {
   req.on('end', () => {
     // When a file is uploaded this runs :)
     try {
+      console.log('file uploaded');
       // Objectifizing the uploaded problem.
       fileWeights = JSON.parse(body).weights;
       // Creating an object of the weights to be send to the client
