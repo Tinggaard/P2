@@ -48,7 +48,8 @@ function addWebSocketEventListeners() {
         break;
       case 'finalResult':
         selector = document.querySelector('#finalResult');
-        selector.innerHTML = 'Shortest path is ' + data.data.shortestPath + ' with the length of ' + data.data.shortestSum;
+        selector.innerHTML = `Shortest path is ${data.data.shortestPath} with the length of ${data.data.shortestSum}.`;
+        break;
       // do nothing
       default:
         break;
