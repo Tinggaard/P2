@@ -1,10 +1,12 @@
       .topNavBar {
-        display: grid;
-        grid-auto-flow: column;
-        grid-template-columns: 33fr 33fr 33fr ;
+        display: flex;
+        justify-content: space-between;
         background-color: #242526;
         margin-bottom: 15px;
+        padding: 10px;
       }
+
+      
       .topNavBar > div {
         margin: 10px;
       }
@@ -18,6 +20,7 @@
         font-size: 24px;
         font-family:'Courier New', Courier, monospace;
       }
+      
       .topNavBar > div > button:hover {
         text-decoration: underline;
       }
@@ -103,4 +106,62 @@
       .uploadDiv{
         background-color: white;
       }
+
+      .fileInput {
+        background-color: transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+        font-size: 24px;
+        font-family: 'Courier New', Courier, monospace;
+        color: white;
+      }
+
+      .fileInput:hover {
+        text-decoration: underline;
+      }
+
+      .fileSendButtonClass {
+        background-color: transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+        font-size: 24px;
+        font-family: 'Courier New', Courier, monospace;
+        color: white;
+      }
+      
+      .fileSendButtonClass:hover {
+        text-decoration: underline;
+      }
+      
+      .fileInputDiv {
+        text-align: right;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .uploadButton {
+        background-color: transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+        font-size: 24px;
+        font-family: 'Courier New', Courier, monospace;
+        color: white;
+      }
+      
+      .uploadButton:hover {
+        text-decoration: underline;
+      }
+      
+      
 

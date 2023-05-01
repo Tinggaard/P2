@@ -102,6 +102,21 @@ function fileSender() {
   }
 }
 
+function fileUpdate() {
+  const fileInput = document.getElementById('fileInput');
+  const fileInputLabel = document.getElementById('fileInputLabel');
+
+  if (fileInput.files.length > 0) {
+    const fileName = fileInput.files[0].name;
+    fileInputLabel.textContent = fileName;
+  } else {
+    fileInputLabel.textContent = 'Upload';
+  }
+}
+
+const fileInputElement = document.getElementById('fileInput');
+fileInputElement.addEventListener('change', fileUpdate);
+
 const fileBtn = document.querySelector('#fileSendButton');
 fileBtn.addEventListener('click', () => {
   fileSender();
