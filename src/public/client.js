@@ -110,10 +110,23 @@ function fileUpdate(file) {
   }
 }
 
+let correctInput = false;
+function fileChecker(file) {
+  const fileName = file.files[0].name;
+  if (fileName.endsWith('.json')) {
+    correctInput = true;
+  } else {
+    alert('Please select a json file');
+  }
+}
 // Add event listener to the file input element
 const fileInputElement = document.getElementById('fileInput');
 fileInputElement.addEventListener('change', () => {
-  fileUpdate(fileInputElement);
+  fileChecker(fileInputElement);
+  if (correctInput) {
+    fileUpdate(fileInputElement);
+  }
+  correctInput = false; // reset the stuff :)
 });
 // const fileBtn = document.querySelector('#fileSendButton');
 // fileBtn.addEventListener('click', () => {
