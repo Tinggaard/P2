@@ -74,11 +74,9 @@ rdyButton.addEventListener('click', () => {
 });
 
 // file upload
-function fileSender() {
-  const uploadFileEle = document.getElementById('fileInput');
-  if (uploadFileEle) {
+function fileSender(file, fileInput) {
+  if (fileInput) {
     // gets the file
-    const file = uploadFileEle.files[0];
     const reader = new FileReader();
     reader.onload = (event) => {
       const weights2 = JSON.parse(event.target.result); // parse JSON data
@@ -102,21 +100,21 @@ function fileSender() {
   }
 }
 
-function fileUpdate() {
-  const fileInput = document.getElementById('fileInput');
+function fileUpdate(file, fileInput) {
   const fileInputLabel = document.getElementById('fileInputLabel');
 
   if (fileInput.files.length > 0) {
-    const fileName = fileInput.files[0].name;
-    fileInputLabel.textContent = fileName;
+    fileInputLabel.textContent = file;
   } else {
     fileInputLabel.textContent = 'Upload';
   }
 }
 const fileInputElement = document.getElementById('fileInput');
 fileInputElement.addEventListener('change', () => {
-  fileUpdate();
-  fileSender();
+  const uploadFileEle = document.getElementById('fileInput');
+  const file = uploadFileEle.files[0];
+  fileUpdate(file, uploadFileEle);
+  fileSender(file, uploadFileEle);
 });
 
 // const fileBtn = document.querySelector('#fileSendButton');
