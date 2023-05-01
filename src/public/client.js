@@ -128,7 +128,3 @@ fileInputElement.addEventListener('change', () => {
   }
   correctInput = false; // reset the stuff :)
 });
-// const fileBtn = document.querySelector('#fileSendButton');
-// fileBtn.addEventListener('click', () => {
-//   fileSender();
-// });
