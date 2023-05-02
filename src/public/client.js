@@ -83,6 +83,7 @@ function rdySender() {
       // Add WebSocket event listeners when connecting
       addWebSocketEventListeners();
     } else {
+      // sets a timeout for disconnect in order to not blow up the code
       setTimeout(() => {
         console.log('disconnect');
         websocket.close();

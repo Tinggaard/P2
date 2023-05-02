@@ -3,6 +3,14 @@ function Obj(type, data) {
   this.data = data;
 }
 
+function factorial(num) {
+  let result = 1;
+  for (let i = 2; i < num; i++) {
+    result *= i;
+  }
+  return result;
+}
+
 // class keeping track of the main task, and iterating combinations/permutations
 class Task {
   constructor(nodeCount, weights) {
@@ -21,6 +29,7 @@ class Task {
     this.shortestPath = []; // permutation of shortest path
     this.shortestSum = Infinity; // sum of above permutation
     this.iterator = this.getNextCombination();
+    this.subtaskAmount = new Obj('totalSubtasks', (factorial(weights.length) / factorial(weights.length - this.subtaskLength)));
   }
 
   swapElements(index1, index2) {
