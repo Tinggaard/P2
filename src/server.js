@@ -19,15 +19,8 @@ let fileWeights;
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
-// A perhaps scuffed way to calculate total subtasks..
-function factorial(num) {
-  let result = 1;
-  for (let i = 2; i < num; i++) {
-    result *= i;
-  }
-  return result;
-}
 
+// A perhaps scuffed way to calculate total subtasks..
 
 // Where the uploaded JSON file with weights is posted to
 app.post('/server-weights', (req, res) => {
@@ -45,7 +38,7 @@ app.post('/server-weights', (req, res) => {
       fileWeightsObj = new Obj('weights', fileWeights);
       // Creates the main task
       task = new Task(fileWeights.length, fileWeights);
-      totalSubtasks = new Obj('totalSubtasks', (factorial(fileWeights.length) / factorial(fileWeights.length - task.subtaskLength)));
+      totalSubtasks = new Obj('totalSubtasks', task.totalSubtasks);
       // Starts creating subtasks/static routes from the main task
       iterator = task.getNextCombination();
     } catch (err) {
