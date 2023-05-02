@@ -83,9 +83,11 @@ function rdySender() {
       // Add WebSocket event listeners when connecting
       addWebSocketEventListeners();
     } else {
-      console.log('disconnect');
-      websocket.close();
-      rdyButton.value = 'Connect';
+      setTimeout(() => {
+        console.log('disconnect');
+        websocket.close();
+        rdyButton.value = 'Connect';
+      }, 500);
     }
   }
 }
