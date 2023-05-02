@@ -6,6 +6,7 @@ let rdyButton;
 let weights;
 
 let totalSubtasks;
+let subtaskCounter = 0;
 
 function addWebSocketEventListeners() {
   websocket.onopen = () => {
@@ -18,6 +19,7 @@ function addWebSocketEventListeners() {
   websocket.onmessage = async (event) => {
     const data = JSON.parse(event.data);
     let selector;
+    let taskPercentage;
 
     // determine type of data
     switch (data.type) {
@@ -33,6 +35,7 @@ function addWebSocketEventListeners() {
         break;
       case 'calc':
         await subtaskHandler(data.data, weights, websocket);
+        subtaskCounter++;
         console.log(weights);
         console.log(data.data);
         break;
@@ -40,12 +43,18 @@ function addWebSocketEventListeners() {
         weights = data.data;
         break;
       case 'progress':
-        selector = document.querySelector('#progress');
+        taskPercentage = (data.data / totalSubtasks) * 100;
+        selector = document.querySelector('#progressText');
         selector.innerHTML = `${data.data} / ${totalSubtasks}`;
+        selector = document.querySelector('#yourContributionText');
+        selector.innerHTML = `Your Contribution: ${subtaskCounter} |  Total: ${(Math.floor(taskPercentage))}%`;
+
         selector = document.querySelector('#progressBar');
-        selector.style.width = `${(data.data / totalSubtasks) * 100}%`;
-        //selector.animate({ width: `${(data.data / totalSubtasks) * 100}%` }, { duration: 10000 });
-        //selector.animate({ width: data.data }, { duration: 1000 });
+        selector.style.width = `${taskPercentage}%`;
+        selector = document.querySelector('#progressBarSingle');
+        selector.style.flex = `${subtaskCounter}`;
+        selector = document.querySelector('#progressBarTotal');
+        selector.style.flex = `${data.data - subtaskCounter}`;
         break;
       case 'totalSubtasks':
         console.log('received on client side: ', data.data);
@@ -110,4 +119,16 @@ function fileSender() {
 const fileBtn = document.querySelector('#fileSendButton');
 fileBtn.addEventListener('click', () => {
   fileSender();
+});
+
+document.querySelector('#progressBar').addEventListener('mouseover', () => {
+  document.querySelector('#progressText').style.display = 'none';
+  document.querySelector('#yourContributionText').style.display = 'block';
+  document.querySelector('#progressBarSingle').style.background = 'darkgreen';
+});
+
+document.querySelector('#progressBar').addEventListener('mouseleave', () => {
+  document.querySelector('#progressText').style.display = 'block';
+  document.querySelector('#yourContributionText').style.display = 'none';
+  document.querySelector('#progressBarSingle').style.background = '#60930292';
 });

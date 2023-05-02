@@ -79,15 +79,6 @@
         text-align: center;
       }
 
-      .progressBar {
-        text-align: center;
-      }
-
-      .progressBar > p{
-        text-align: center;
-        display: inline;
-      }
-
       .progress {
         background: rgba(255,255,255,0.1);
         border-radius: 7px;
@@ -96,7 +87,7 @@
         padding: 0 5px;
         display: flex;
         height: 40px;
-        width: 500px;
+        width: 45%;
         text-align: center;
         margin-bottom: 15px;
         left: 0;
@@ -105,21 +96,49 @@
         margin-right: auto;
       }
       
-      .progress-bar {
-        box-shadow: 0 10px 10px -10px #1aff006c;
+      .progressBar {
+        overflow: hidden;
+        display: flex;
+        box-shadow: 0 10px 10px -10px #83ffcb6c;
         border-radius: 7px;
         background: #00ff33ac;
         height: 30px;
         line-height: 30px;
-        color: white;
+        transition: width 1s linear, box-shadow 0.2s linear;
+        opacity: 0.95;
+        width: 75%;
+      }
+
+      .progressBar:hover {
+        box-shadow: 0 10px 10px -10px #d0ffec;
+        opacity: 1;
+      }
+
+      .progressBarTotal{
+        flex: 1;
+        background: #1eff00d3;
+        height: 30px;
         transition: all 1s;
       }
 
-      .progress-text {
+      .progressBarSingle{
+        flex: 1;
+        background: #60930292;
+        box-shadow: 0 10px 10px -10px #1aff006c;
+        height: 30px;
+        transition: flex 1s linear, background 1s;
+      }
+
+      .progressText {
         position: absolute; 
         left: 0;
         right: 0;
         margin: auto;
+        display: block;
+      }
+
+      #yourContributionText {
+        display: none;
       }
 
       @keyframes load {
