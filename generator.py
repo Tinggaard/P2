@@ -12,5 +12,5 @@ for x in range(N):
 
 print(weights)
 
-with open("weights.json", "w") as f:
+with open("weights2.json", "w") as f:
     f.write(json.dumps(weights))
