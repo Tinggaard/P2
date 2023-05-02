@@ -10,11 +10,11 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 // initialization of variables
 let finishedSubtasks = 0;
-let iterator;
 let totalSubtasks;
 let task;
 let fileWeightsObj;
 let fileWeights = null;
+let problem;
 // Express server implementation
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
@@ -53,13 +53,24 @@ app.post('/server-weights', (req, res) => {
       task = new Task(fileWeights.length, fileWeights);
       totalSubtasks = new Obj('totalSubtasks', (factorial(fileWeights.length) / factorial(fileWeights.length - task.subtaskLength)));
       // Starts creating subtasks/static routes from the main task
-      iterator = task.getNextCombination();
+      //iterator = task.getNextCombination();
     } catch (err) {
       console.error('Error parsing JSON:', err);
       res.status(400).json({ error: 'Invalid JSON data' });
     }
   });
 });
+
+function sendProblem(webSocket) {
+  if (task.iterator) {
+    problem = task.iterator.next();
+  }
+  // tjekker om problemet findes
+  if (problem && !problem.done) {
+    const obj = new Obj('calc', problem.value);
+    webSocket.send(JSON.stringify(obj));
+  }
+}
 
 // Create a new instance of ws server
 const wsServer = new WebSocketServer({ server: appServer });
@@ -75,17 +86,7 @@ wsServer.on('connection', (webSocket) => {
   webSocket.send(JSON.stringify(totalSubtasks));
 
   webSocket.send(JSON.stringify(fileWeightsObj));
-  // tjekker om iterator er true, for ikke at kalde .next
-  let problem;
-  if (iterator) {
-    problem = iterator.next();
-  }
-  // tjekker om problemet findes
-  if (problem && !problem.done) {
-    const obj = new Obj('calc', problem.value);
-    webSocket.send(JSON.stringify(obj));
-  }
-
+  sendProblem(webSocket);
   // log messages we get in
   webSocket.on('message', (message) => {
     // determine type of data
@@ -100,7 +101,7 @@ wsServer.on('connection', (webSocket) => {
           task.shortestPath = data.data.route.slice();
           task.shortestSum = data.data.routeLength;
         }
-        problem = iterator.next(); // send new problem
+        problem = task.iterator.next(); // send new problem
         if (problem && !problem.done) {
           const obj = new Obj('calc', problem.value);
           webSocket.send(JSON.stringify(obj));

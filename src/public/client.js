@@ -150,6 +150,5 @@ fileInputElement.addEventListener('change', () => {
   if (correctInput) {
     fileUpdate(fileInputElement);
   }
-
   correctInput = false; // reset the stuff :)
 });
