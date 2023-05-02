@@ -99,32 +99,30 @@
       .progressBar {
         overflow: hidden;
         display: flex;
-        box-shadow: 0 10px 10px -10px #83ffcb6c;
+        box-shadow: 0 10px 10px -10px #4180666c;
         border-radius: 7px;
         background: #00ff33ac;
         height: 30px;
         line-height: 30px;
         transition: width 1s linear, box-shadow 0.2s linear;
         opacity: 0.95;
-        width: 75%;
       }
 
       .progressBar:hover {
-        box-shadow: 0 10px 10px -10px #d0ffec;
+        box-shadow: 0 10px 10px -10px #01ac4b;
         opacity: 1;
       }
 
       .progressBarTotal{
         flex: 1;
-        background: #1eff00d3;
+        background: #1eff0093;
         height: 30px;
-        transition: all 1s;
+        transition: all 1s linear;
       }
 
       .progressBarSingle{
         flex: 1;
-        background: #60930292;
-        box-shadow: 0 10px 10px -10px #1aff006c;
+        background: #2BAE66FF;
         height: 30px;
         transition: flex 1s linear, background 1s;
       }
@@ -139,11 +137,6 @@
 
       #yourContributionText {
         display: none;
-      }
-
-      @keyframes load {
-        0% { width: 0; }
-        100% { width: 100%; }
       }
     
       body {

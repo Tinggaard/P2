@@ -49,8 +49,11 @@ function addWebSocketEventListeners() {
         selector = document.querySelector('#yourContributionText');
         selector.innerHTML = `Your Contribution: ${subtaskCounter} |  Total: ${(Math.floor(taskPercentage))}%`;
 
+        // Update progress bar
         selector = document.querySelector('#progressBar');
         selector.style.width = `${taskPercentage}%`;
+
+        // Display how much the single user has contributed
         selector = document.querySelector('#progressBarSingle');
         selector.style.flex = `${subtaskCounter}`;
         selector = document.querySelector('#progressBarTotal');
@@ -121,14 +124,16 @@ fileBtn.addEventListener('click', () => {
   fileSender();
 });
 
+// Change text and color of progressbar when hovering with the mouse
 document.querySelector('#progressBar').addEventListener('mouseover', () => {
   document.querySelector('#progressText').style.display = 'none';
   document.querySelector('#yourContributionText').style.display = 'block';
-  document.querySelector('#progressBarSingle').style.background = 'darkgreen';
+  document.querySelector('#progressBarSingle').style.background = 'teal';
 });
 
+// Change the prograss bar back to default the mouse leaves the progress bar
 document.querySelector('#progressBar').addEventListener('mouseleave', () => {
   document.querySelector('#progressText').style.display = 'block';
   document.querySelector('#yourContributionText').style.display = 'none';
-  document.querySelector('#progressBarSingle').style.background = '#60930292';
+  document.querySelector('#progressBarSingle').style.background = '#2BAE66FF';
 });
