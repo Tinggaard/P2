@@ -12,6 +12,7 @@ const dirname = path.dirname(filename);
 let finishedSubtasks = 0;
 let totalSubtasks;
 let task;
+let 
 let fileWeightsObj;
 let fileWeights = null;
 let problem;
@@ -27,41 +28,10 @@ function factorial(num) {
   }
   return result;
 }
-// her er den som tjekker om der er weights på serveren, ved ikke om den tjekker om det er legit
-app.get('/weights', (req, res) => {
-  if (fileWeights != null) { // burde nok tjekke om objektet er empty?
-    res.json(true);
-  }
-});
-
-// Where the uploaded JSON file with weights is posted to
-app.post('/server-weights', (req, res) => {
-  let body = '';
-  // Stringifies and concatenates the received data from the uploaded JSON file
-  req.on('data', (chunk) => {
-    body += chunk.toString();
-  });
-  req.on('end', () => {
-    // When a file is uploaded this runs :)
-    try {
-      console.log('file uploaded');
-      // Objectifizing the uploaded problem.
-      fileWeights = JSON.parse(body).weights;
-      // Creating an object of the weights to be send to the client
-      fileWeightsObj = new Obj('weights', fileWeights);
-      // Creates the main task
-      task = new Task(fileWeights.length, fileWeights);
-      totalSubtasks = new Obj('totalSubtasks', (factorial(fileWeights.length) / factorial(fileWeights.length - task.subtaskLength)));
-      // Starts creating subtasks/static routes from the main task
-      //iterator = task.getNextCombination();
-    } catch (err) {
-      console.error('Error parsing JSON:', err);
-      res.status(400).json({ error: 'Invalid JSON data' });
-    }
-  });
-});
 
 function sendProblem(webSocket) {
+  webSocket.send(JSON.stringify(fileWeightsObj));
+  webSocket.send(JSON.stringify(totalSubtasks));
   if (task.iterator) {
     problem = task.iterator.next();
   }
@@ -83,10 +53,10 @@ wsServer.on('connection', (webSocket) => {
 
   // at first connect, we send the ID and total amount of subtasks to the client
   webSocket.send(JSON.stringify(id));
-  webSocket.send(JSON.stringify(totalSubtasks));
 
-  webSocket.send(JSON.stringify(fileWeightsObj));
-  sendProblem(webSocket);
+  if (task !== undefined) {
+    sendProblem(webSocket);
+  }
   // log messages we get in
   webSocket.on('message', (message) => {
     // determine type of data
@@ -127,6 +97,42 @@ wsServer.on('connection', (webSocket) => {
     // Print number of clients connected
     console.log('Connected clients:', wsServer.clients.size);
   });
+});
+
+// Where the uploaded JSON file with weights is posted to
+app.post('/server-weights', (req, res) => {
+  let body = '';
+  // Stringifies and concatenates the received data from the uploaded JSON file
+  req.on('data', (chunk) => {
+    body += chunk.toString();
+  });
+  req.on('end', () => {
+    // When a file is uploaded this runs :)
+    try {
+      console.log('file uploaded');
+      // Objectifizing the uploaded problem.
+      fileWeights = JSON.parse(body).weights;
+      // Creating an object of the weights to be send to the client
+      fileWeightsObj = new Obj('weights', fileWeights);
+      // Creates the main task
+      task = new Task(fileWeights.length, fileWeights);
+      totalSubtasks = new Obj('totalSubtasks', (factorial(fileWeights.length) / factorial(fileWeights.length - task.subtaskLength)));
+      wsServer.clients.forEach((client) => {
+        sendProblem(client);
+      });
+      // Starts creating subtasks/static routes from the main task
+    } catch (err) {
+      console.error('Error parsing JSON:', err);
+      res.status(400).json({ error: 'Invalid JSON data' });
+    }
+  });
+});
+
+// her er den som tjekker om der er weights på serveren, ved ikke om den tjekker om det er legit
+app.get('/weights', (req, res) => {
+  if (fileWeights != null) { // burde nok tjekke om objektet er empty?
+    res.json(true);
+  }
 });
 
 // Just for checking information is sent to the clients
