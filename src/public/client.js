@@ -31,8 +31,6 @@ function addWebSocketEventListeners() {
         break;
       case 'calc':
         await subtaskHandler(data.data, weights, websocket);
-        console.log(weights);
-        console.log(data.data);
         break;
       case 'weights':
         weights = data.data;

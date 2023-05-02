@@ -61,7 +61,6 @@ wsServer.on('connection', (webSocket) => {
   // at first connect, we send the ID and total amount of subtasks to the client
   webSocket.send(JSON.stringify(id));
   webSocket.send(JSON.stringify(totalSubtasks));
-
   webSocket.send(JSON.stringify(fileWeightsObj));
 
   let problem = iterator.next();
@@ -79,7 +78,6 @@ wsServer.on('connection', (webSocket) => {
       // Shows that the server recieves a solution from the client.
       case 'result':
         finishedSubtasks += 1;
-        console.log(`received result: ${data.data.route}  |   length: ${data.data.routeLength}`);
 
         if (task.shortestSum > data.data.routeLength) {
           task.shortestPath = data.data.route.slice();

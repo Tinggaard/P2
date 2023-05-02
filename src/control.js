@@ -49,9 +49,7 @@ class Task {
     if (k === 1) { // base case
       yield this.currPermutation;
     } else {
-      // console.log(k, arr);
       yield* this.getNextPermutation(k - 1, this.currPermutation);
-      // console.log(this.currCombination);
       for (let i = 0; i < k - 1; i++) {
         if (k % 2 === 0) { // k is even
           this.swapElements(i, k - 1);

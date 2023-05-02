@@ -23,7 +23,6 @@ function calcRoute(staticRoute, weights) {
 
     // Add the last point of the route
     subtaskResult.route.push(0); // Append the route finish
-    console.log('test: ', subtaskResult);
     // Calculate route length and add to subtask object
     subtaskResult.routeLength = calcRouteLength(weights, subtaskResult.route);
 
