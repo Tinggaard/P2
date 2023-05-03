@@ -19,6 +19,9 @@ let fileWeights;
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
+
+// A perhaps scuffed way to calculate total subtasks..
+
 // Where the uploaded JSON file with weights is posted to
 app.post('/server-weights', (req, res) => {
   let body = '';
@@ -30,12 +33,12 @@ app.post('/server-weights', (req, res) => {
     // When a file is uploaded this runs :)
     try {
       // Objectifizing the uploaded problem.
-      fileWeights = JSON.parse(body);
+      fileWeights = JSON.parse(body).weights;
       // Creating an object of the weights to be send to the client
-      fileWeightsObj = new Obj('weights', fileWeights.weights);
+      fileWeightsObj = new Obj('weights', fileWeights);
       // Creates the main task
-      task = new Task(fileWeightsObj.data.length, fileWeights.weights);
-      totalSubtasks = new Obj('totalSubtasks', ((task.nodeCount - 1) * (task.nodeCount - 2)));
+      task = new Task(fileWeights.length, fileWeights);
+      totalSubtasks = new Obj('totalSubtasks', task.totalSubtasks);
       // Starts creating subtasks/static routes from the main task
       iterator = task.getNextCombination();
     } catch (err) {
@@ -58,7 +61,6 @@ wsServer.on('connection', (webSocket) => {
   // at first connect, we send the ID and total amount of subtasks to the client
   webSocket.send(JSON.stringify(id));
   webSocket.send(JSON.stringify(totalSubtasks));
-
   webSocket.send(JSON.stringify(fileWeightsObj));
 
   let problem = iterator.next();
@@ -76,7 +78,6 @@ wsServer.on('connection', (webSocket) => {
       // Shows that the server recieves a solution from the client.
       case 'result':
         finishedSubtasks += 1;
-        console.log(`received result: ${data.data.route}  |   length: ${data.data.routeLength}`);
 
         if (task.shortestSum > data.data.routeLength) {
           task.shortestPath = data.data.route.slice();
@@ -87,7 +88,11 @@ wsServer.on('connection', (webSocket) => {
           const obj = new Obj('calc', problem.value);
           webSocket.send(JSON.stringify(obj));
         }
-        console.log(`shortest route:  ${task.shortestPath}  |   shortest route length ${task.shortestSum}`);
+        // If the entire task is completed output the shortest path in the HTML file.
+        if (finishedSubtasks === totalSubtasks.data) {
+          const obj = new Obj('finalResult', task);
+          webSocket.send(JSON.stringify(obj));
+        }
         break;
       // do nothing
       default:

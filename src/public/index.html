@@ -9,14 +9,23 @@
       <div class="homeButton"><button>Home</button></div>
       <div class="statsButton"><button>Stats</button></div>
       <div class="userButton"><button>User</button></div>
+      <div class="fileInputDiv">
+        <label for="fileInput" class="uploadButton" id="fileInputLabel">Select file</label>
+        <input class="fileInput hidden" type="file" id="fileInput" />
+        <!-- <input type="button" value="Upload" class="fileSendButtonClass" id="fileSendButton" /> -->
+      </div>
+      
+      
     </nav>
+    
     <div class="connecterBtnClassDiv">
+
       <form>
         <input type="button" class="connecterBtnClass" id="connecterBtn" value="Connect">
       </form>
     </div>
-    <p id="id"></p>
-    <p id="time"></p>
+    <p id="id">Your ID</p>
+    <p id="time">The current time</p>
     <div class="progress">
       <div id="progressBar" class="progressBar">
         <div class="progressBarSingle" id="progressBarSingle"></div>
@@ -28,12 +37,10 @@
     <div class="calculationDiv">
       <p class="calculation" id="calculation"></p>
     </div>
+    <p id="finalResult"></p>
 
 
-    <div class="uploadDiv">
-      <input class="fileInput" type="file" id="fileInput" />     
-        <input type="button" value="upload" class="fileSendButtonClass" id="fileSendButton">
-    </div>
+  
 
   <script src="client.js" type="module"></script>
   

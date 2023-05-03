@@ -3,6 +3,14 @@ function Obj(type, data) {
   this.data = data;
 }
 
+function factorial(num) {
+  let result = 1;
+  for (let i = 2; i < num; i++) {
+    result *= i;
+  }
+  return result;
+}
+
 // class keeping track of the main task, and iterating combinations/permutations
 class Task {
   constructor(nodeCount, weights) {
@@ -15,11 +23,16 @@ class Task {
     } else {
       this.subtaskLength = 2;
     }
+    this.totalSubtasks = this.calcTotalSubtasks();
     this.currCombination = this.nodes.slice(0, this.subtaskLength); // init combination
     this.currPermutation = this.currCombination.slice(); // copy of the above
     this.unfinished = []; // array of unfinished task from DC'ed clients
     this.shortestPath = []; // permutation of shortest path
     this.shortestSum = Infinity; // sum of above permutation
+  }
+
+  calcTotalSubtasks() {
+    return factorial(this.nodeCount) / factorial(this.nodeCount - this.subtaskLength);
   }
 
   swapElements(index1, index2) {
@@ -36,9 +49,7 @@ class Task {
     if (k === 1) { // base case
       yield this.currPermutation;
     } else {
-      // console.log(k, arr);
       yield* this.getNextPermutation(k - 1, this.currPermutation);
-      // console.log(this.currCombination);
       for (let i = 0; i < k - 1; i++) {
         if (k % 2 === 0) { // k is even
           this.swapElements(i, k - 1);

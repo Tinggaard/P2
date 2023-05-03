@@ -36,8 +36,6 @@ function addWebSocketEventListeners() {
       case 'calc':
         await subtaskHandler(data.data, weights, websocket);
         subtaskCounter++;
-        console.log(weights);
-        console.log(data.data);
         break;
       case 'weights':
         weights = data.data;
@@ -61,7 +59,11 @@ function addWebSocketEventListeners() {
         break;
       case 'totalSubtasks':
         console.log('received on client side: ', data.data);
-        totalSubtasks = 1320;
+        totalSubtasks = data.data;
+        break;
+      case 'finalResult':
+        selector = document.querySelector('#finalResult');
+        selector.innerHTML = `Shortest path is ${data.data.shortestPath} with the length of ${data.data.shortestSum}.`;
         break;
       // do nothing
       default:
@@ -91,21 +93,17 @@ rdyButton.addEventListener('click', () => {
 });
 
 // file upload
-function fileSender() {
-  const uploadFileEle = document.getElementById('fileInput');
-  if (uploadFileEle) {
-    // gets the file
-    const file = uploadFileEle.files[0];
+function fileSender(file) {
+  if (file) { // Check if file exists
     const reader = new FileReader();
     reader.onload = (event) => {
-      const weights2 = JSON.parse(event.target.result); // parse JSON data
-      // Send weights to server using fetch() with a POST request
+      const weights2 = JSON.parse(event.target.result);
       fetch('/server-weights', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // set the Content-Type header
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(weights2), // send the parsed JSON data
+        body: JSON.stringify(weights2),
       })
         .then((response) => response.json())
         .then((responseData) => {
@@ -115,13 +113,39 @@ function fileSender() {
     };
     reader.readAsText(file);
   } else {
-    console.log('File input element not found.');
+    console.log('File not found.');
   }
 }
 
-const fileBtn = document.querySelector('#fileSendButton');
-fileBtn.addEventListener('click', () => {
-  fileSender();
+// Function to update the label of the file input element
+function fileUpdate(file) {
+  const fileInputLabel = document.querySelector('#fileInputLabel');
+  if (file.files.length > 0) {
+    const fileName = file.files[0].name;
+    fileInputLabel.textContent = fileName;
+    fileSender(file.files[0]); // Call fileSender with the selected file
+  } else {
+    fileInputLabel.textContent = 'Upload';
+  }
+}
+
+let correctInput = false;
+function fileChecker(file) {
+  const fileName = file.files[0].name;
+  if (fileName.endsWith('.json')) {
+    correctInput = true;
+  } else {
+    alert('Please select a json file');
+  }
+}
+// Add event listener to the file input element
+const fileInputElement = document.getElementById('fileInput');
+fileInputElement.addEventListener('change', () => {
+  fileChecker(fileInputElement);
+  if (correctInput) {
+    fileUpdate(fileInputElement);
+  }
+  correctInput = false; // reset the stuff :)
 });
 
 // Change text and color of progressbar when hovering with the mouse
