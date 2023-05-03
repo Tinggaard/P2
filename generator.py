@@ -1,7 +1,7 @@
 import json
 import random
 
-N = 11
+N = 13
 
 weights = {"weights": []}
 

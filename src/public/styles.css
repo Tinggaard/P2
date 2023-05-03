@@ -51,6 +51,66 @@
   text-align: center;
 }
 
+.progress {
+  background: rgba(255,255,255,0.1);
+  border-radius: 7px;
+  align-items: center;
+  position: relative;
+  padding: 0 5px;
+  display: flex;
+  height: 40px;
+  width: 45%;
+  text-align: center;
+  margin-bottom: 15px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.progressBar {
+  overflow: hidden;
+  display: flex;
+  box-shadow: 0 10px 10px -10px #4180666c;
+  border-radius: 7px;
+  background: #00ff33ac;
+  height: 30px;
+  line-height: 30px;
+  transition: width 1s linear, box-shadow 0.2s linear;
+  opacity: 0.95;
+}
+
+.progressBar:hover {
+  box-shadow: 0 10px 10px -10px #01ac4b;
+  opacity: 1;
+}
+
+.progressBarTotal{
+  flex: 1;
+  background: #1eff0093;
+  height: 30px;
+  transition: all 1s linear;
+}
+
+.progressBarSingle{
+  flex: 1;
+  background: #2BAE66FF;
+  height: 30px;
+  transition: flex 1s linear, background 1s;
+}
+
+.progressText {
+  position: absolute; 
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: block;
+}
+
+#yourContributionText {
+  display: none;
+}
+
 .homeButton {
   text-align: left;
 }
