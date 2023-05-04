@@ -4,7 +4,6 @@ import random
 N = 13
 
 weights = {"weights": []}
-
 for x in range(N):
     weights["weights"].append([])
     for i in range(N):

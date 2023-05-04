@@ -29,6 +29,8 @@ class Task {
     this.unfinished = []; // array of unfinished task from DC'ed clients
     this.shortestPath = []; // permutation of shortest path
     this.shortestSum = Infinity; // sum of above permutation
+    this.iterator = this.getNextCombination();
+    this.subtaskAmount = new Obj('totalSubtasks', (factorial(weights.length) / factorial(weights.length - this.subtaskLength)));
   }
 
   calcTotalSubtasks() {

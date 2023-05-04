@@ -4,7 +4,7 @@ import { Obj, subtaskHandler } from './provider.js';
 let websocket;
 let rdyButton;
 let weights;
-
+let correctInput = false;
 let totalSubtasks;
 let subtaskCounter = 0;
 
@@ -72,18 +72,39 @@ function addWebSocketEventListeners() {
   };
 }
 
-function rdySender() {
-  if (rdyButton.value === 'Connect') {
-    websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
-    console.log('connect');
-    rdyButton.value = 'Disconnect';
+function serverWeightCheck() {
+  return fetch('/weights')
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log('Received response from server:', responseData);
+      if (responseData === true) {
+        return true;
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.error(error);
+      return false;
+    });
+}
 
-    // Add WebSocket event listeners when connecting
-    addWebSocketEventListeners();
-  } else {
-    console.log('disconnect');
-    websocket.close();
-    rdyButton.value = 'Connect';
+function rdySender() {
+  const weightCheck = serverWeightCheck();
+  if (weightCheck) {
+    if (rdyButton.value === 'Connect') {
+      websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
+      console.log('connect');
+      rdyButton.value = 'Disconnect';
+      // Add WebSocket event listeners when connecting
+      addWebSocketEventListeners();
+    } else {
+      // sets a timeout for disconnect in order to not blow up the code
+      setTimeout(() => {
+        console.log('disconnect');
+        websocket.close();
+        rdyButton.value = 'Connect';
+      }, 500);
+    }
   }
 }
 
@@ -129,15 +150,16 @@ function fileUpdate(file) {
   }
 }
 
-let correctInput = false;
 function fileChecker(file) {
   const fileName = file.files[0].name;
   if (fileName.endsWith('.json')) {
     correctInput = true;
   } else {
+    // eslint-disable-next-line no-alert
     alert('Please select a json file');
   }
 }
+
 // Add event listener to the file input element
 const fileInputElement = document.getElementById('fileInput');
 fileInputElement.addEventListener('change', () => {
