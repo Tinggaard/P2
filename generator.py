@@ -1,7 +1,7 @@
 import json
 import random
 
-N = 12
+N = 13
 
 weights = {"weights": []}
 for x in range(N):
@@ -11,5 +11,5 @@ for x in range(N):
 
 print(weights)
 
-with open("weights3.json", "w") as f:
+with open("weights.json", "w") as f:
     f.write(json.dumps(weights))

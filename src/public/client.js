@@ -5,6 +5,9 @@ let websocket;
 let rdyButton;
 let weights;
 let correctInput = false;
+let totalSubtasks;
+let subtaskCounter = 0;
+
 function addWebSocketEventListeners() {
   websocket.onopen = () => {
     const connectMsg = 'connect message';
@@ -16,6 +19,7 @@ function addWebSocketEventListeners() {
   websocket.onmessage = async (event) => {
     const data = JSON.parse(event.data);
     let selector;
+    let taskPercentage;
 
     // determine type of data
     switch (data.type) {
@@ -31,20 +35,31 @@ function addWebSocketEventListeners() {
         break;
       case 'calc':
         await subtaskHandler(data.data, weights, websocket);
-        console.log(weights);
-        console.log(data.data);
+        subtaskCounter++;
         break;
       case 'weights':
         weights = data.data;
         break;
       case 'progress':
-        selector = document.querySelector('#progress');
-        selector.innerHTML = data.data;
+        taskPercentage = (data.data / totalSubtasks) * 100;
+        selector = document.querySelector('#progressText');
+        selector.innerHTML = `${data.data} / ${totalSubtasks}`;
+        selector = document.querySelector('#yourContributionText');
+        selector.innerHTML = `Your Contribution: ${subtaskCounter} |  Total: ${(Math.floor(taskPercentage))}%`;
+
+        // Update progress bar
+        selector = document.querySelector('#progressBar');
+        selector.style.width = `${taskPercentage}%`;
+
+        // Display how much the single user has contributed
+        selector = document.querySelector('#progressBarSingle');
+        selector.style.flex = `${subtaskCounter}`;
+        selector = document.querySelector('#progressBarTotal');
+        selector.style.flex = `${data.data - subtaskCounter}`;
         break;
       case 'totalSubtasks':
         console.log('received on client side: ', data.data);
-        selector = document.querySelector('#totalSubtasks');
-        selector.innerHTML = data.data;
+        totalSubtasks = data.data;
         break;
       case 'finalResult':
         selector = document.querySelector('#finalResult');
@@ -140,6 +155,7 @@ function fileChecker(file) {
   if (fileName.endsWith('.json')) {
     correctInput = true;
   } else {
+    // eslint-disable-next-line no-alert
     alert('Please select a json file');
   }
 }
@@ -152,4 +168,18 @@ fileInputElement.addEventListener('change', () => {
     fileUpdate(fileInputElement);
   }
   correctInput = false; // reset the stuff :)
+});
+
+// Change text and color of progressbar when hovering with the mouse
+document.querySelector('#progressBar').addEventListener('mouseover', () => {
+  document.querySelector('#progressText').style.display = 'none';
+  document.querySelector('#yourContributionText').style.display = 'block';
+  document.querySelector('#progressBarSingle').style.background = 'teal';
+});
+
+// Change the prograss bar back to default the mouse leaves the progress bar
+document.querySelector('#progressBar').addEventListener('mouseleave', () => {
+  document.querySelector('#progressText').style.display = 'block';
+  document.querySelector('#yourContributionText').style.display = 'none';
+  document.querySelector('#progressBarSingle').style.background = '#2BAE66FF';
 });

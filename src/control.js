@@ -23,6 +23,7 @@ class Task {
     } else {
       this.subtaskLength = 2;
     }
+    this.totalSubtasks = this.calcTotalSubtasks();
     this.currCombination = this.nodes.slice(0, this.subtaskLength); // init combination
     this.currPermutation = this.currCombination.slice(); // copy of the above
     this.unfinished = []; // array of unfinished task from DC'ed clients
@@ -30,6 +31,10 @@ class Task {
     this.shortestSum = Infinity; // sum of above permutation
     this.iterator = this.getNextCombination();
     this.subtaskAmount = new Obj('totalSubtasks', (factorial(weights.length) / factorial(weights.length - this.subtaskLength)));
+  }
+
+  calcTotalSubtasks() {
+    return factorial(this.nodeCount) / factorial(this.nodeCount - this.subtaskLength);
   }
 
   swapElements(index1, index2) {
@@ -46,9 +51,7 @@ class Task {
     if (k === 1) { // base case
       yield this.currPermutation;
     } else {
-      // console.log(k, arr);
       yield* this.getNextPermutation(k - 1, this.currPermutation);
-      // console.log(this.currCombination);
       for (let i = 0; i < k - 1; i++) {
         if (k % 2 === 0) { // k is even
           this.swapElements(i, k - 1);

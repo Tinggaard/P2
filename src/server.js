@@ -19,7 +19,6 @@ let problem;
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
-// A perhaps scuffed way to calculate total subtasks..
 
 function sendProblem(webSocket) {
   webSocket.send(JSON.stringify(fileWeightsObj));
@@ -58,7 +57,6 @@ wsServer.on('connection', (webSocket) => {
       // Shows that the server recieves a solution from the client.
       case 'result':
         finishedSubtasks += 1;
-        console.log(`received result: ${data.data.route}  |   length: ${data.data.routeLength}`);
 
         if (currentTask.shortestSum > data.data.routeLength) {
           currentTask.shortestPath = data.data.route.slice();
