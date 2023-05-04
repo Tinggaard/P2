@@ -79,7 +79,6 @@ wsServer.on('connection', (webSocket) => {
               sendProblem(client);
             });
           } else {
-            finishedSubtasks = 0;
             currentTask = undefined;
           }
         }
@@ -117,6 +116,7 @@ app.post('/server-weights', (req, res) => {
       fileWeightsObj = new Obj('weights', fileWeights);
       // Creates the main task
       if (currentTask === undefined) {
+        finishedSubtasks = 0;
         currentTask = new Task(fileWeights.length, fileWeights);
         wsServer.clients.forEach((client) => {
           sendProblem(client);
