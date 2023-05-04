@@ -12,7 +12,6 @@ const dirname = path.dirname(filename);
 let finishedSubtasks = 0;
 let currentTask;
 const allTasksQueue = [];
-const allSolutions = [];
 let fileWeightsObj;
 let fileWeights = null;
 let problem;
@@ -51,13 +50,10 @@ wsServer.on('connection', (webSocket) => {
     sendProblem(webSocket);
   }
 
-  console.log()
-
   // log messages we get in
   webSocket.on('message', (message) => {
     // determine type of data
     const data = JSON.parse(message);
-    console.log(allTasksQueue.length);
     switch (data.type) {
       // Shows that the server recieves a solution from the client.
       case 'result':
@@ -75,14 +71,17 @@ wsServer.on('connection', (webSocket) => {
         }
         // If the entire task is completed output the shortest path in the HTML file.
         if (finishedSubtasks === currentTask.subtaskAmount.data) {
+          console.log('done with task');
           const obj = new Obj('finalResult', currentTask);
           webSocket.send(JSON.stringify(obj));
-          if (allTasksQueue.legnth > 0) {
+          if (allTasksQueue.length > 0) {
+            finishedSubtasks = 0;
             currentTask = allTasksQueue.shift();
             wsServer.clients.forEach((client) => {
               sendProblem(client);
             });
           } else {
+            finishedSubtasks = 0;
             currentTask = undefined;
           }
         }
@@ -96,7 +95,7 @@ wsServer.on('connection', (webSocket) => {
   webSocket.on('close', () => {
     console.log(`${id.data}: *Disconnected*`);
     if (problem && !problem.done) { // tjekker om problemet findes
-      currentTask.unfinished.push(currentTask.value); // add permutation back to task class
+      currentTask.unfinished.push(problem.value); // add permutation back to task class
     }
     // Print number of clients connected
     console.log('Connected clients:', wsServer.clients.size);
