@@ -12,8 +12,8 @@ pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<us
     task.retain(|&x| !static_route.contains(&x));
 
     // heaps alg to get all combinations
-    let mut all_combs = Vec::new();
-    heaps(task.len(), &mut task, &mut all_combs);
+    let mut all_perms = Vec::new();
+    heaps(task.len(), &mut task, &mut all_perms);
 
     let mut current_index = static_route[static_route.len() - 1]; // start node
     let mut shortest = usize::MAX; // shortest route
@@ -22,7 +22,7 @@ pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<us
 
 
     // find shortest of all permutations
-    for (i, perm) in all_combs.iter().enumerate() {
+    for (i, perm) in all_perms.iter().enumerate() {
         current = 0;
 
         // get the distance
@@ -42,9 +42,8 @@ pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<us
     }
 
     // get combination that is shortest
-    let testlength = all_combs.len();
-    log(testlength); 
-    let result = all_combs.remove(shortest_index);
+    let testlength = all_perms.len();
+    let result = all_perms.remove(shortest_index);
 
     // return it
     result
@@ -66,10 +65,4 @@ fn heaps(k: usize, arr: &mut [usize], result: &mut Vec<Vec<usize>>) {
         }
         heaps(k - 1, arr, result);
     }
-}
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(a: usize);
 }

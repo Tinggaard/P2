@@ -32,14 +32,14 @@ fn main(){
 
     let mut task = (1..weights.len()).collect::<Vec<usize>>();
 
-    let mut all_combs = Vec::new();
-    heaps(task.len(), &mut task, &mut all_combs);
+    let mut all_perms = Vec::new();
+    heaps(task.len(), &mut task, &mut all_perms);
 
     let mut current; // current route
     let mut shortest_index = 0; // index of shortest route
     let mut shortest = usize::MAX; // shortest route
 
-    for (i, perm) in all_combs.iter().enumerate() {
+    for (i, perm) in all_perms.iter().enumerate() {
         let mut current_index = 0; 
         current = 0;
 
@@ -59,7 +59,7 @@ fn main(){
         }
     }
 
-    println!("{:?}", all_combs[shortest_index]);
+    println!("{:?}", all_perms[shortest_index]);
     println!("{:?}", shortest);
 
     // Ends timer and calcs elapsed time
