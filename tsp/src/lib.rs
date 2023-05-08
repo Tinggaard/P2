@@ -42,7 +42,6 @@ pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<us
     }
 
     // get combination that is shortest
-    let testlength = all_perms.len();
     let result = all_perms.remove(shortest_index);
 
     // return it
