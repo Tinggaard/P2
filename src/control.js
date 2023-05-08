@@ -18,8 +18,8 @@ class Task {
     this.nodes = Array.from(Array(nodeCount).keys()).slice(1); // array from 1 -> n-1
     this.weights = weights; // matrix of weights
     // Make sure the clients don't have to calculate too much
-    if (nodeCount > 12) {
-      this.subtaskLength = nodeCount - 10;
+    if (nodeCount > 13) {
+      this.subtaskLength = nodeCount - 11;
     } else {
       this.subtaskLength = 2;
     }
