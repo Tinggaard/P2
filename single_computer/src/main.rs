@@ -26,41 +26,15 @@ fn main(){
 
     // Unwraps the weights_result into a vector
     let weights = weights_result.unwrap();
-    
-    // Console logging the result of the shortest path
-    //println!("{:?}", get_all_perm(&weights, weights.len()));
 
     let mut task = (1..weights.len()).collect::<Vec<usize>>();
+    let mut shortest_length = usize::MAX; 
+    let mut shortest_path = Vec::new(); 
 
-    let mut all_combs = Vec::new();
-    heaps(task.len(), &mut task, &mut all_combs);
+    heaps(task.len(), &mut task, &mut shortest_length, &mut shortest_path, &weights);
 
-    let mut current; // current route
-    let mut shortest_index = 0; // index of shortest route
-    let mut shortest = usize::MAX; // shortest route
-
-    for (i, perm) in all_combs.iter().enumerate() {
-        let mut current_index = 0; 
-        current = 0;
-
-        // get the distance
-        for node in perm.iter() {
-            current += weights[current_index][*node];
-            current_index = *node;
-        }
-
-        // add back to start node
-        current += weights[current_index][0];
-
-        // save index and length if shortest
-        if current < shortest {
-            shortest = current;
-            shortest_index = i;
-        }
-    }
-
-    println!("{:?}", all_combs[shortest_index]);
-    println!("{:?}", shortest);
+    println!("{:?}", shortest_length);
+    println!("{:?}", shortest_path);
 
     // Ends timer and calcs elapsed time
     let end_time = Instant::now();
@@ -71,21 +45,50 @@ fn main(){
     
 }
 
-
-fn heaps(k: usize, arr: &mut [usize], result: &mut Vec<Vec<usize>>) {
+/* Heaps algorithm used for generating permutations.
+/  Instead of pushing each permutation to an array, the length of
+/  each permutation is calculated and compared to the shortest inside
+/  of the function to save memory.
+*/
+fn heaps(k: usize, perm: &mut Vec<usize>, shortest_length: &mut usize, shortest_path: &mut Vec<usize>, weights: &Vec<Vec<usize>>) {
     if k == 1 {
-        result.push(arr.to_vec());
+        let path_length = calc_route_length(perm, weights); // Calculate the length of the current permutation
+
+        // The length and the permutation is saved if it is smaller than the currently shortest
+        if path_length < *shortest_length {
+            *shortest_length = path_length;
+            *shortest_path = perm.clone();
+        }
+
         return;
     }
     
-    heaps(k - 1, arr, result);
+    heaps(k - 1, perm, shortest_length, shortest_path, weights);
 
     for i in 0..k - 1 {
         if k % 2 == 0 {
-            arr.swap(i, k-1);
+            perm.swap(i, k-1);
         } else {
-            arr.swap(0, k-1);
+            perm.swap(0, k-1);
         }
-        heaps(k - 1, arr, result);
+        heaps(k - 1, perm, shortest_length, shortest_path, weights);
     }
+}
+
+// Function calculates the length of a given route/permutation
+fn calc_route_length(perm: &mut [usize], weights: &Vec<Vec<usize>>) -> usize {
+    let mut path_length = 0;
+    let mut last_vertex = 0;
+
+    // Iterate over the vertices in the permutation and add up the
+    for vertex in perm.iter() {
+        path_length += weights[last_vertex][*vertex];  // Add the distance from the last vertex to this one.
+        last_vertex = *vertex; // Update the last vertex to the current one.
+
+    }
+
+    // Add the distance from the last vertex back to the starting vertex.
+    path_length += weights[last_vertex][0];  
+    
+    return path_length;
 }
