@@ -2,6 +2,7 @@ extern crate console_error_panic_hook;
 use std::panic;
 use wasm_bindgen::prelude::*;
 
+#[allow(non_snake_case)]
 #[wasm_bindgen]
 pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<usize> {
     // print panics to the console in browser
@@ -15,7 +16,7 @@ pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<us
     let mut all_perms = Vec::new();
     heaps(task.len(), &mut task, &mut all_perms);
 
-    let mut current_index = static_route[static_route.len() - 1]; // start node
+    let mut current_index;
     let mut shortest = usize::MAX; // shortest route
     let mut current; // current route
     let mut shortest_index = 0; // index of shortest route
@@ -24,7 +25,7 @@ pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<us
     // find shortest of all permutations
     for (i, perm) in all_perms.iter().enumerate() {
         current = 0;
-        current_index = 0;
+        current_index = static_route[static_route.len() - 1]; // start node
 
         // get the distance
         for node in perm.iter() {
