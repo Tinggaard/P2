@@ -2,7 +2,6 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 import { Obj, Task } from './control.js';
 
@@ -36,14 +35,8 @@ function sendProblem(webSocket) {
 // Create a new instance of ws server
 const wsServer = new WebSocketServer({ server: appServer });
 wsServer.on('connection', (webSocket) => {
-  // const available = new Obj('available', true);
-  const id = new Obj('id', uuidv4());
-  console.log(`${id.data}: *Connected*`);
   // Print number of clients connected
   console.log('Connected clients:', wsServer.clients.size);
-
-  // at first connect, we send the ID and total amount of subtasks to the client
-  webSocket.send(JSON.stringify(id));
 
   if (currentTask !== undefined) {
     sendProblem(webSocket);
@@ -69,7 +62,7 @@ wsServer.on('connection', (webSocket) => {
         }
         // If the entire task is completed output the shortest path in the HTML file.
         if (finishedSubtasks === currentTask.subtaskAmount.data) {
-          console.log('done with task');
+          console.log('Done with task');
           const obj = new Obj('finalResult', currentTask);
           webSocket.send(JSON.stringify(obj));
           if (allTasksQueue.length > 0) {
@@ -79,7 +72,6 @@ wsServer.on('connection', (webSocket) => {
               sendProblem(client);
             });
           } else {
-            finishedSubtasks = 0;
             currentTask = undefined;
           }
         }
@@ -91,7 +83,6 @@ wsServer.on('connection', (webSocket) => {
   });
   // Print to console on client disconnected
   webSocket.on('close', () => {
-    console.log(`${id.data}: *Disconnected*`);
     if (problem && !problem.done) { // tjekker om problemet findes
       currentTask.unfinished.push(problem.value); // add permutation back to task class
     }
@@ -117,6 +108,7 @@ app.post('/server-weights', (req, res) => {
       fileWeightsObj = new Obj('weights', fileWeights);
       // Creates the main task
       if (currentTask === undefined) {
+        finishedSubtasks = 0;
         currentTask = new Task(fileWeights.length, fileWeights);
         wsServer.clients.forEach((client) => {
           sendProblem(client);
@@ -141,11 +133,9 @@ app.get('/weights', (req, res) => {
   }
 });
 
-// Just for checking information is sent to the clients
+// Send the total progress each second
 setInterval(() => {
   wsServer.clients.forEach((client) => {
-    const time = new Obj('time', new Date().toTimeString());
-    client.send(JSON.stringify(time));
     const progress = new Obj('progress', finishedSubtasks);
     client.send(JSON.stringify(progress));
   });

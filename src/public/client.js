@@ -8,6 +8,24 @@ let correctInput = false;
 let totalSubtasks;
 let subtaskCounter = 0;
 
+function updateProgress(yourContribution) {
+  const taskPercentage = (yourContribution / totalSubtasks) * 100;
+  let selector = document.querySelector('#progressText');
+  selector.innerHTML = `${yourContribution} / ${totalSubtasks}`;
+  selector = document.querySelector('#yourContributionText');
+  selector.innerHTML = `Your Contribution: ${subtaskCounter} |  Total: ${(Math.floor(taskPercentage))}%`;
+
+  // Update progress bar
+  selector = document.querySelector('#progressBar');
+  selector.style.width = `${taskPercentage}%`;
+
+  // Display how much the single user has contributed
+  selector = document.querySelector('#progressBarSingle');
+  selector.style.flex = `${subtaskCounter}`;
+  selector = document.querySelector('#progressBarTotal');
+  selector.style.flex = `${yourContribution - subtaskCounter}`;
+}
+
 function addWebSocketEventListeners() {
   websocket.onopen = () => {
     const connectMsg = 'connect message';
@@ -19,20 +37,9 @@ function addWebSocketEventListeners() {
   websocket.onmessage = async (event) => {
     const data = JSON.parse(event.data);
     let selector;
-    let taskPercentage;
 
     // determine type of data
     switch (data.type) {
-      // get UUID from server
-      case 'id':
-        selector = document.querySelector('#id');
-        selector.innerHTML = `Your ID is: ${data.data}`;
-        break;
-      // get server time
-      case 'time':
-        selector = document.querySelector('#time');
-        selector.innerHTML = `Current time on server is: ${data.data}`;
-        break;
       case 'calc':
         await subtaskHandler(data.data, weights, websocket);
         subtaskCounter++;
@@ -41,24 +48,9 @@ function addWebSocketEventListeners() {
         weights = data.data;
         break;
       case 'progress':
-        taskPercentage = (data.data / totalSubtasks) * 100;
-        selector = document.querySelector('#progressText');
-        selector.innerHTML = `${data.data} / ${totalSubtasks}`;
-        selector = document.querySelector('#yourContributionText');
-        selector.innerHTML = `Your Contribution: ${subtaskCounter} |  Total: ${(Math.floor(taskPercentage))}%`;
-
-        // Update progress bar
-        selector = document.querySelector('#progressBar');
-        selector.style.width = `${taskPercentage}%`;
-
-        // Display how much the single user has contributed
-        selector = document.querySelector('#progressBarSingle');
-        selector.style.flex = `${subtaskCounter}`;
-        selector = document.querySelector('#progressBarTotal');
-        selector.style.flex = `${data.data - subtaskCounter}`;
+        updateProgress(data.data);
         break;
       case 'totalSubtasks':
-        console.log('received on client side: ', data.data);
         totalSubtasks = data.data;
         break;
       case 'finalResult':
@@ -76,7 +68,6 @@ function serverWeightCheck() {
   return fetch('/weights')
     .then((response) => response.json())
     .then((responseData) => {
-      console.log('Received response from server:', responseData);
       if (responseData === true) {
         return true;
       }
@@ -93,16 +84,14 @@ function rdySender() {
   if (weightCheck) {
     if (rdyButton.value === 'Connect') {
       websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
-      console.log('connect');
       rdyButton.value = 'Disconnect';
       // Add WebSocket event listeners when connecting
       addWebSocketEventListeners();
     } else {
-      // sets a timeout for disconnect in order to not blow up the code
+      websocket.close();
+      rdyButton.value = 'Connect';
+      // sets a timeout for disconnect to let websocket close properly
       setTimeout(() => {
-        console.log('disconnect');
-        websocket.close();
-        rdyButton.value = 'Connect';
       }, 500);
     }
   }
@@ -127,14 +116,11 @@ function fileSender(file) {
         body: JSON.stringify(weights2),
       })
         .then((response) => response.json())
-        .then((responseData) => {
-          console.log('Received response from server:', responseData);
-        })
         .catch((error) => console.error(error));
     };
     reader.readAsText(file);
   } else {
-    console.log('File not found.');
+    console.error('File not found.');
   }
 }
 

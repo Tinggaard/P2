@@ -5,43 +5,35 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <nav class="topNavBar">
-      <div class="homeButton"><button>Home</button></div>
-      <div class="statsButton"><button>Stats</button></div>
-      <div class="userButton"><button>User</button></div>
-      <div class="fileInputDiv">
-        <label for="fileInput" class="uploadButton" id="fileInputLabel">Select file</label>
-        <input class="fileInput hidden" type="file" id="fileInput" />
+
+    <nav id="topNavBar">
+      <div id="fileInputDiv">
+        <label for="fileInput" id="fileInputLabel">Select file</label>
+        <input class="hidden" type="file" id="fileInput"/>
       </div>
-      
-      
     </nav>
     
-    <div class="connecterBtnClassDiv">
-
+    <div class="text-center">
       <form>
-        <input type="button" class="connecterBtnClass" id="connecterBtn" value="Connect">
+        <input type="button" id="connecterBtn" value="Connect">
       </form>
     </div>
-    <p id="id">Your ID</p>
-    <p id="time">The current time</p>
-    <div class="progress">
-      <div id="progressBar" class="progressBar">
-        <div class="progressBarSingle" id="progressBarSingle"></div>
-        <div class="progressBarTotal" id="progressBarTotal"></div>
-        <p id="progressText" class="progressText"></p>
-        <p id="yourContributionText" class="progressText"></p>
+
+    <div class="text-center" id="progress">
+      <div class="text-center" id="progressBar">
+        <div id="progressBarSingle"></div>
+        <div id="progressBarTotal"></div>
+        <p class="progressText" id="progressText"></p>
+        <p class="progressText" id="yourContributionText"></p>
       </div>
     </div>
-    <div class="calculationDiv">
-      <p class="calculation" id="calculation"></p>
+
+    <div id="calculationDiv">
+      <p class="text-center" id="calculation"></p>
     </div>
+
     <p id="finalResult"></p>
 
-
-  
-
   <script src="client.js" type="module"></script>
-  
   </body>
 </html>

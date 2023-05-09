@@ -41,11 +41,12 @@ async function subtaskHandler(data, weights, webSocket) {
   await (calcRoute(data, weights))
     .then((result) => {
       const selector = document.querySelector('#calculation');
-      selector.innerHTML += `Calculation received: ${data}, final calculation: ${result.route} <br>`;
+      selector.innerHTML = `Calculation received: ${data}, final calculation: ${result.route}`;
+
       const resultObj = new Obj('result', result);
       webSocket.send(JSON.stringify(resultObj));
     })
-    .catch((err) => { console.log(err); });
+    .catch((err) => { console.error(err); });
 }
 
 export { Obj, subtaskHandler };
