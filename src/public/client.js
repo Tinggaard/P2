@@ -1,4 +1,4 @@
-import { Obj, subtaskHandler } from './provider.js';
+import { subtaskHandler } from './provider.js';
 
 // first contact
 let websocket;
@@ -27,12 +27,6 @@ function updateProgress(yourContribution) {
 }
 
 function addWebSocketEventListeners() {
-  websocket.onopen = () => {
-    const connectMsg = 'connect message';
-    const testMessage = new Obj('message', connectMsg);
-    websocket.send(JSON.stringify(testMessage));
-  };
-
   // when we get a message
   websocket.onmessage = async (event) => {
     const data = JSON.parse(event.data);
