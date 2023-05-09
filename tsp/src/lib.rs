@@ -24,6 +24,7 @@ pub fn bruteForce(static_route: &[usize], weights: &[usize], n: usize) -> Vec<us
     // find shortest of all permutations
     for (i, perm) in all_combs.iter().enumerate() {
         current = 0;
+        current_index = 0;
 
         // get the distance
         for node in perm.iter() {
