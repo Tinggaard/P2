@@ -11,6 +11,7 @@ const dirname = path.dirname(filename);
 let finishedSubtasks = 0;
 let currentTask;
 const allTasksQueue = [];
+const allSolutions = [];
 let fileWeightsObj;
 let fileWeights = null;
 let problem;
@@ -42,6 +43,11 @@ wsServer.on('connection', (webSocket) => {
     sendProblem(webSocket);
   }
 
+  const queueObj = new Obj('queue', allTasksQueue);
+  const solutionsObj = new Obj('solutions', allSolutions);
+  webSocket.send(JSON.stringify(queueObj));
+  webSocket.send(JSON.stringify(solutionsObj));
+
   // log messages we get in
   webSocket.on('message', (message) => {
     // determine type of data
@@ -57,19 +63,25 @@ wsServer.on('connection', (webSocket) => {
         }
         problem = currentTask.iterator.next(); // send new problem
         if (problem && !problem.done) {
+          //sendObj(webSocket, 'calc', problem.value);
           const obj = new Obj('calc', problem.value);
           webSocket.send(JSON.stringify(obj));
         }
         // If the entire task is completed output the shortest path in the HTML file.
         if (finishedSubtasks === currentTask.subtaskAmount.data) {
           console.log('Done with task');
-          const obj = new Obj('finalResult', currentTask);
-          webSocket.send(JSON.stringify(obj));
+          allSolutions.unshift(currentTask);
+          wsServer.clients.forEach((client) => {
+            const obj = new Obj('solutions', allSolutions);
+            client.send(JSON.stringify(obj));
+          });
           if (allTasksQueue.length > 0) {
             finishedSubtasks = 0;
             currentTask = allTasksQueue.shift();
             wsServer.clients.forEach((client) => {
               sendProblem(client);
+              const obj = new Obj('queue', allTasksQueue);
+              client.send(JSON.stringify(obj));
             });
           } else {
             currentTask = undefined;
@@ -115,6 +127,10 @@ app.post('/server-weights', (req, res) => {
         });
       } else {
         allTasksQueue.push(new Task(fileWeights.length, fileWeights));
+        wsServer.clients.forEach((client) => {
+          const obj = new Obj('queue', allTasksQueue);
+          client.send(JSON.stringify(obj));
+        });
       }
       // Starts creating subtasks/static routes from the main task
     } catch (err) {

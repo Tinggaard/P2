@@ -132,7 +132,7 @@ p, .text-center {
   border-style: solid;
   margin: auto;
   padding: 10px;
-  width: 1000px;
+  width: 900px;
   height: 2em;
   line-height: 1.5em;
   display: flex;
@@ -141,4 +141,42 @@ p, .text-center {
 
 #finalResult {
   font-size: 25px;
+}
+
+#calcAndResultsContainer {
+  margin-top: 10px;
+  padding: 10px;
+  width: 1000px;
+  height: auto;
+  line-height: 1.5em;
+  display: flex;
+  flex-direction: column;
+}
+
+#statusDiv {
+  margin-top: 10px;
+  padding: 10px;
+  width: auto;
+  height: auto;
+  line-height: 1.5em;
+  display: flex;
+  flex-direction: row;
+}
+
+.status {
+  margin: auto;
+  padding: 10px;
+  width: 45%;
+  height: 2em;
+  line-height: 1.5em;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

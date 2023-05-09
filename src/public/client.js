@@ -53,9 +53,21 @@ function addWebSocketEventListeners() {
       case 'totalSubtasks':
         totalSubtasks = data.data;
         break;
-      case 'finalResult':
-        selector = document.querySelector('#finalResult');
-        selector.innerHTML = `Shortest path is ${data.data.shortestPath} with the length of ${data.data.shortestSum}.`;
+      case 'solutions':
+        selector = document.querySelector('#solutions');
+        selector.innerHTML = '';
+        data.data.forEach((solution, index) => {
+          const node = document.createElement('p');
+          node.innerHTML = `${index}.  Shortest path: ${solution.shortestPath}. <br>  Length: ${solution.shortestSum}.<br> <br>`;
+          selector.appendChild(node);
+        });
+        break;
+      case 'queue':
+        selector = document.querySelector('#queue');
+        selector.innerHTML = '';
+        data.data.forEach((queue, index) => {
+          selector.innerHTML += `${index}. Weights: ${queue.weights}.<br>`;
+        });
         break;
       // do nothing
       default:
