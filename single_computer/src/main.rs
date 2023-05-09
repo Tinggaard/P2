@@ -6,7 +6,7 @@ fn main(){
     let start_time = Instant::now();
 
     // Loading in the json file
-    let file = File::open("../weights.json")
+    let file = File::open("../weights_7.json")
         .expect("json file error");
     // Reads the values of the json file
     let json: serde_json::Value = serde_json::from_reader(file)
