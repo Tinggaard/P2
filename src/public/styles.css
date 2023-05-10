@@ -180,3 +180,32 @@ p, .text-center {
   justify-content: center;
   align-items: center;
 }
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  text-align: left;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 4px;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}

@@ -51,16 +51,36 @@ function addWebSocketEventListeners() {
         selector = document.querySelector('#solutions');
         selector.innerHTML = '';
         data.data.forEach((solution, index) => {
-          const node = document.createElement('p');
-          node.innerHTML = `${index}.  Shortest path: ${solution.shortestPath}. <br>  Length: ${solution.shortestSum}.<br> <br>`;
-          selector.appendChild(node);
+          const p = document.createElement('p');
+          let weightsString = '';
+          for (let i = 0; i < solution.weights.length; i++) {
+            weightsString += ` ${solution.weights[i]}`;
+            if (i % solution.nodeCount === 0) {
+              weightsString += '\n';
+            }
+          }
+          p.innerHTML += `${index}.  Shortest path: ${solution.shortestPath}. <br>  Length: ${solution.shortestSum}.<br> <br>`;
+          p.classList.add('tooltip');
+          p.setAttribute('data-tooltip', `${weightsString}`);
+          selector.appendChild(p);
         });
         break;
       case 'queue':
         selector = document.querySelector('#queue');
         selector.innerHTML = '';
         data.data.forEach((queue, index) => {
-          selector.innerHTML += `${index}. Weights: ${queue.weights}.<br>`;
+          const p = document.createElement('p');
+          let weightsString = '';
+          for (let i = 0; i < queue.weights.length; i++) {
+            weightsString += ` ${queue.weights[i]}`;
+            if (i % queue.nodeCount === 0) {
+              weightsString += '\n';
+            }
+          }
+          p.innerHTML += `Queue number: ${index}. Hover for weights <br>`;
+          p.classList.add('tooltip');
+          p.setAttribute('data-tooltip', `${weightsString}`);
+          selector.appendChild(p);
         });
         break;
       // do nothing
