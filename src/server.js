@@ -114,7 +114,6 @@ app.post('/server-weights', (req, res) => {
     try {
       console.log('file uploaded');
       // Objectifizing the uploaded problem.
-      console.log(JSON.parse(body));
       fileWeights = JSON.parse(body).weightsPlaceholder.weights;
       const fileName = JSON.parse(body).name;
       // Creating an object of the weights to be send to the client
@@ -132,6 +131,7 @@ app.post('/server-weights', (req, res) => {
           sendObj(client, 'queue', allTasksQueue);
         });
       }
+      res.sendStatus(200);
       // Starts creating subtasks/static routes from the main task
     } catch (err) {
       console.error('Error parsing JSON:', err);

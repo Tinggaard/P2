@@ -30,7 +30,7 @@ p, .text-center {
   display: flex;
   justify-content: space-between;
   background-color: #242526;
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   padding: 10px;
 }
 
@@ -207,4 +207,32 @@ p, .text-center {
   opacity: 1;
   visibility: visible;
   z-index: 2;
+}
+
+#msg {
+  margin: 0px;
+  padding: 5px;
+  font-size: 12px;
+  color: white;
+  background-color: #242526;
+  padding-bottom: 7px;
+  margin-bottom: 10px;
+  border-color: #270;
+  border-style: solid;
+  border-left: black;
+  border-right: black;
+  border-bottom: black;
+  border-width: 1px;
+  opacity: 0;
+}
+
+.notification {
+  animation: notification 4s linear;
+}
+
+@keyframes notification {
+  0%   {opacity: 0;}
+  20%  {opacity: 1;}
+  80%  {opacity: 1;}
+  100% {opacity: 0;}
 }

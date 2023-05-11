@@ -148,7 +148,12 @@ function fileSender(file, fileName) {
         },
         body: JSON.stringify(taskData),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          response.json();
+          document.querySelector('#msg').classList.remove('notification'); // Play animation
+          document.querySelector('#msg').offsetWidth;
+          document.querySelector('#msg').classList.add('notification');
+        })
         .catch((error) => console.error(error));
     };
     reader.readAsText(file);
