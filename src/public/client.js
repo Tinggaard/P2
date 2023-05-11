@@ -64,9 +64,8 @@ function addWebSocketEventListeners() {
         data.data.forEach((solution, index) => {
           const p = document.createElement('p');
           const weightsString = createTooltip(solution.weights, solution.nodeCount);
-          p.innerHTML += `${index}. Shortest path: ${solution.shortestPath.join('   &#8680; ')}. <br>  Length: ${solution.shortestSum}.<br> <br>`;
+          p.innerHTML += `${index + 1}. ${solution.name}: Shortest path: ${solution.shortestPath.join('   &#8680; ')}. <br>  Length: ${solution.shortestSum}.<br> <br>`;
           p.classList.add('tooltip');
-          p.classList.add('Queue-Solution'); //LAV 
           p.setAttribute('data-tooltip', `${weightsString}`);
           selector.appendChild(p);
         });
@@ -77,7 +76,7 @@ function addWebSocketEventListeners() {
         data.data.forEach((queue, index) => {
           const p = document.createElement('p');
           const weightsString = createTooltip(weights, queue.nodeCount);
-          p.innerHTML += `Queue number: ${index}. Hover for weights <br>`;
+          p.innerHTML += `${index + 1}. ${queue.name} <br>`;
           p.classList.add('tooltip');
           p.setAttribute('data-tooltip', `${weightsString}`);
           selector.appendChild(p);
@@ -134,17 +133,20 @@ rdyButton.addEventListener('click', () => {
 });
 
 // file upload
-function fileSender(file) {
+function fileSender(file, fileName) {
   if (file) { // Check if file exists
     const reader = new FileReader();
     reader.onload = (event) => {
-      const weights2 = JSON.parse(event.target.result);
+      const taskData = {
+        name: fileName,
+        weightsPlaceholder: JSON.parse(event.target.result),
+      };
       fetch('/server-weights', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(weights2),
+        body: JSON.stringify(taskData),
       })
         .then((response) => response.json())
         .catch((error) => console.error(error));
@@ -161,7 +163,7 @@ function fileUpdate(file) {
   if (file.files.length > 0) {
     const fileName = file.files[0].name;
     fileInputLabel.textContent = fileName;
-    fileSender(file.files[0]); // Call fileSender with the selected file
+    fileSender(file.files[0], fileName); // Call fileSender with the selected file
   } else {
     fileInputLabel.textContent = 'Upload';
   }

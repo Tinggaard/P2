@@ -114,18 +114,20 @@ app.post('/server-weights', (req, res) => {
     try {
       console.log('file uploaded');
       // Objectifizing the uploaded problem.
-      fileWeights = JSON.parse(body).weights;
+      console.log(JSON.parse(body));
+      fileWeights = JSON.parse(body).weightsPlaceholder.weights;
+      const fileName = JSON.parse(body).name;
       // Creating an object of the weights to be send to the client
       fileWeightsObj = new Obj('weights', fileWeights);
       // Creates the main task
       if (currentTask === undefined) {
         finishedSubtasks = 0;
-        currentTask = new Task(fileWeights.length, fileWeights);
+        currentTask = new Task(fileWeights.length, fileWeights, fileName);
         wsServer.clients.forEach((client) => {
           sendProblem(client);
         });
       } else {
-        allTasksQueue.push(new Task(fileWeights.length, fileWeights));
+        allTasksQueue.push(new Task(fileWeights.length, fileWeights, fileName));
         wsServer.clients.forEach((client) => {
           sendObj(client, 'queue', allTasksQueue);
         });
