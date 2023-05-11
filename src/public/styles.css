@@ -180,14 +180,14 @@ p, .text-center {
   align-items: center;
 }
 
-.tooltip {
+.task {
   position: relative;
-  display: inline-block;
+  display: inline;
   cursor: help;
   text-align: left;
 }
 
-.tooltip::after {
+.task::after {
   content: attr(data-tooltip);
   position: absolute;
   top: 100%;
@@ -203,7 +203,7 @@ p, .text-center {
   transition: opacity 0.2s, visibility 0.2s;
 }
 
-.tooltip:hover::after {
+.task:hover::after {
   opacity: 1;
   visibility: visible;
   z-index: 2;

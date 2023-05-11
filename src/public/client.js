@@ -65,7 +65,7 @@ function addWebSocketEventListeners() {
           const p = document.createElement('p');
           const weightsString = createTooltip(solution.weights, solution.nodeCount);
           p.innerHTML += `${index + 1}. ${solution.name}: Shortest path: ${solution.shortestPath.join('   &#8680; ')}. <br>  Length: ${solution.shortestSum}.<br> <br>`;
-          p.classList.add('tooltip');
+          p.classList.add('task');
           p.setAttribute('data-tooltip', `${weightsString}`);
           selector.appendChild(p);
         });
@@ -77,7 +77,7 @@ function addWebSocketEventListeners() {
           const p = document.createElement('p');
           const weightsString = createTooltip(weights, queue.nodeCount);
           p.innerHTML += `${index + 1}. ${queue.name} <br>`;
-          p.classList.add('tooltip');
+          p.classList.add('task');
           p.setAttribute('data-tooltip', `${weightsString}`);
           selector.appendChild(p);
         });
@@ -113,6 +113,7 @@ function rdySender() {
   if (weightCheck) {
     if (rdyButton.value === 'Connect') {
       document.querySelector('#yourContributionText').style.display = 'none';
+      document.querySelector('#clientCounter').style.display = 'block';
       websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
       rdyButton.value = 'Disconnect';
       // Add WebSocket event listeners when connecting
@@ -120,6 +121,7 @@ function rdySender() {
     } else {
       websocket.close();
       rdyButton.value = 'Connect';
+      document.querySelector('#clientCounter').style.display = 'none';
       // sets a timeout for disconnect to let websocket close properly
       setTimeout(() => {
       }, 500);
@@ -150,9 +152,12 @@ function fileSender(file, fileName) {
       })
         .then((response) => {
           response.json();
-          document.querySelector('#msg').classList.remove('notification'); // Play animation
-          document.querySelector('#msg').offsetWidth;
-          document.querySelector('#msg').classList.add('notification');
+          const elem = document.querySelector('#msg');
+          elem.classList.add('notification'); // add class describing animation
+          elem.style.animation = 'none'; // trigger reflow
+          setTimeout(() => {
+            elem.style.animation = '';
+          }, 10);
         })
         .catch((error) => console.error(error));
     };
