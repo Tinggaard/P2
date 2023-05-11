@@ -24,7 +24,6 @@ p, .text-center {
   left: 0;
   right: 0;
   margin: auto;
-  display: block;
 }
 
 #topNavBar {
@@ -55,6 +54,14 @@ p, .text-center {
 
 #fileInputLabel:hover {
   text-decoration: underline;
+}
+
+#clientCounter {
+  background-color: transparent;
+  height: fit-content;
+  margin: 0;
+  padding: 0;
+  padding-top: 7px;
 }
 
 #connecterBtn {
@@ -121,10 +128,6 @@ p, .text-center {
   transition: all 1s linear;
 }
 
-#yourContributionText {
-  display: none;
-}
-
 #calculationDiv {
   background-color: #3A3B3C;
   border-radius: 20px;
@@ -137,10 +140,6 @@ p, .text-center {
   line-height: 1.5em;
   display: flex;
   flex-direction: column-reverse;
-}
-
-#finalResult {
-  font-size: 25px;
 }
 
 #calcAndResultsContainer {

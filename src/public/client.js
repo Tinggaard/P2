@@ -8,6 +8,17 @@ let correctInput = false;
 let totalSubtasks;
 let subtaskCounter = 0;
 
+function createTooltip(weightsArray, nodeCount) {
+  let weightsString = 'Weights \n ';
+  for (let i = 0; i < weightsArray.length; i++) {
+    weightsString += ` ${weightsArray[i]}`;
+    if (i % nodeCount === 0) {
+      weightsString += '\n';
+    }
+  }
+  return weightsString;
+}
+
 function updateProgress(yourContribution) {
   const taskPercentage = (yourContribution / totalSubtasks) * 100;
   let selector = document.querySelector('#progressText');
@@ -52,15 +63,10 @@ function addWebSocketEventListeners() {
         selector.innerHTML = '';
         data.data.forEach((solution, index) => {
           const p = document.createElement('p');
-          let weightsString = '';
-          for (let i = 0; i < solution.weights.length; i++) {
-            weightsString += ` ${solution.weights[i]}`;
-            if (i % solution.nodeCount === 0) {
-              weightsString += '\n';
-            }
-          }
-          p.innerHTML += `${index}.  Shortest path: ${solution.shortestPath}. <br>  Length: ${solution.shortestSum}.<br> <br>`;
+          const weightsString = createTooltip(solution.weights, solution.nodeCount);
+          p.innerHTML += `${index}. Shortest path: ${solution.shortestPath.join('   &#8680; ')}. <br>  Length: ${solution.shortestSum}.<br> <br>`;
           p.classList.add('tooltip');
+          p.classList.add('Queue-Solution'); //LAV 
           p.setAttribute('data-tooltip', `${weightsString}`);
           selector.appendChild(p);
         });
@@ -70,18 +76,16 @@ function addWebSocketEventListeners() {
         selector.innerHTML = '';
         data.data.forEach((queue, index) => {
           const p = document.createElement('p');
-          let weightsString = '';
-          for (let i = 0; i < queue.weights.length; i++) {
-            weightsString += ` ${queue.weights[i]}`;
-            if (i % queue.nodeCount === 0) {
-              weightsString += '\n';
-            }
-          }
+          const weightsString = createTooltip(weights, queue.nodeCount);
           p.innerHTML += `Queue number: ${index}. Hover for weights <br>`;
           p.classList.add('tooltip');
           p.setAttribute('data-tooltip', `${weightsString}`);
           selector.appendChild(p);
         });
+        break;
+      case 'clientCounter':
+        selector = document.querySelector('#clientCounter');
+        selector.innerHTML = `Clients connected: ${data.data}`;
         break;
       // do nothing
       default:
@@ -109,6 +113,7 @@ function rdySender() {
   const weightCheck = serverWeightCheck();
   if (weightCheck) {
     if (rdyButton.value === 'Connect') {
+      document.querySelector('#yourContributionText').style.display = 'none';
       websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
       rdyButton.value = 'Disconnect';
       // Add WebSocket event listeners when connecting

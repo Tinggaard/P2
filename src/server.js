@@ -35,7 +35,10 @@ function sendProblem(webSocket) {
 // Create a new instance of ws server
 const wsServer = new WebSocketServer({ server: appServer });
 wsServer.on('connection', (webSocket) => {
-  // Print number of clients connected
+  // Print and send number of clients connected.
+  wsServer.clients.forEach((client) => {
+    sendObj(client, 'clientCounter', wsServer.clients.size);
+  });
   console.log('Connected clients:', wsServer.clients.size);
 
   if (currentTask !== undefined) {
@@ -91,7 +94,10 @@ wsServer.on('connection', (webSocket) => {
     if (problem && !problem.done) { // tjekker om problemet findes
       currentTask.unfinished.push(problem.value); // add permutation back to task class
     }
-    // Print number of clients connected
+    // Print and number of clients connected
+    wsServer.clients.forEach((client) => {
+      sendObj(client, 'clientCounter', wsServer.clients.size);
+    });
     console.log('Connected clients:', wsServer.clients.size);
   });
 });
