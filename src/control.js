@@ -11,9 +11,15 @@ function factorial(num) {
   return result;
 }
 
+function sendObj(webSocket, type, data) {
+  const obj = new Obj(type, data);
+  webSocket.send(JSON.stringify(obj));
+}
+
 // class keeping track of the main task, and iterating combinations/permutations
 class Task {
-  constructor(nodeCount, weights) {
+  constructor(nodeCount, weights, fileName) {
+    this.name = fileName;
     this.nodeCount = nodeCount; // amount of nodes
     this.nodes = Array.from(Array(nodeCount).keys()).slice(1); // array from 1 -> n-1
     this.weights = weights; // matrix of weights
@@ -87,5 +93,5 @@ class Task {
 }
 
 export {
-  Obj, Task,
+  Obj, Task, sendObj,
 };

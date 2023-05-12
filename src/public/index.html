@@ -11,8 +11,13 @@
         <label for="fileInput" id="fileInputLabel">Select file</label>
         <input class="hidden" type="file" id="fileInput"/>
       </div>
+      <div>
+        <p id="clientCounter"></p>
+      </div>
     </nav>
-    
+    <div id="msg">
+      &#10003; File successfully uploaded.
+    </div>    
     <div class="text-center">
       <form>
         <input type="button" id="connecterBtn" value="Connect">
@@ -28,11 +33,20 @@
       </div>
     </div>
 
-    <div id="calculationDiv">
-      <p class="text-center" id="calculation"></p>
+  <div class="container">
+    <div class="text-center" id="calcAndResultsContainer">
+      <div id="calculationDiv">
+        <p class="text-center" id="calculation"></p>
+      </div>
+      <div id="statusDiv">
+        <div class="status"><p>Queue</p> <p id="queue"></p></div>
+        <div class="status"><p>Completed tasks</p> <p id="solutions"></p></div>
+      </div>
     </div>
+  </div>
 
-    <p id="finalResult"></p>
+
+    
 
   <script src="client.js" type="module"></script>
   </body>
