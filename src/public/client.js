@@ -141,7 +141,7 @@ function fileSender(file, fileName) {
     reader.onload = (event) => {
       const taskData = {
         name: fileName,
-        weightsPlaceholder: JSON.parse(event.target.result),
+        weights: JSON.parse(event.target.result).weights,
       };
       fetch('/server-weights', {
         method: 'POST',

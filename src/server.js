@@ -12,7 +12,6 @@ let finishedSubtasks = 0;
 let currentTask;
 const allTasksQueue = [];
 const allSolutions = [];
-let fileWeightsObj;
 let fileWeights = null;
 let problem;
 // Express server implementation
@@ -21,7 +20,7 @@ const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
 
 function sendProblem(webSocket) {
-  webSocket.send(JSON.stringify(fileWeightsObj));
+  webSocket.send(JSON.stringify(new Obj('weights', currentTask.weights)));
   webSocket.send(JSON.stringify(currentTask.subtaskAmount));
   if (currentTask.iterator) {
     problem = currentTask.iterator.next();
@@ -75,6 +74,7 @@ wsServer.on('connection', (webSocket) => {
           if (allTasksQueue.length > 0) {
             finishedSubtasks = 0;
             currentTask = allTasksQueue.shift();
+            fileWeights = currentTask.weights;
             wsServer.clients.forEach((client) => {
               sendProblem(client);
               sendObj(client, 'queue', allTasksQueue);
@@ -113,20 +113,21 @@ app.post('/server-weights', (req, res) => {
     // When a file is uploaded this runs
     try {
       console.log('file uploaded');
-      // Objectifizing the uploaded problem.
-      fileWeights = JSON.parse(body).weightsPlaceholder.weights;
+      // name of task
       const fileName = JSON.parse(body).name;
-      // Creating an object of the weights to be send to the client
-      fileWeightsObj = new Obj('weights', fileWeights);
+      // store new weights
+      const newWeights = JSON.parse(body).weights;
       // Creates the main task
       if (currentTask === undefined) {
+      // Creating an object of the weights to be send to the client
+        fileWeights = newWeights;
         finishedSubtasks = 0;
         currentTask = new Task(fileWeights.length, fileWeights, fileName);
         wsServer.clients.forEach((client) => {
           sendProblem(client);
         });
       } else {
-        allTasksQueue.push(new Task(fileWeights.length, fileWeights, fileName));
+        allTasksQueue.push(new Task(newWeights.length, newWeights, fileName));
         wsServer.clients.forEach((client) => {
           sendObj(client, 'queue', allTasksQueue);
         });
