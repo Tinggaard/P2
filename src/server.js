@@ -15,6 +15,7 @@ const allSolutions = [];
 let fileWeights = null;
 let problem;
 // Express server implementation
+let start;
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
@@ -67,14 +68,18 @@ wsServer.on('connection', (webSocket) => {
         // If the entire task is completed output the shortest path in the HTML file.
         if (finishedSubtasks === currentTask.subtaskAmount.data) {
           console.log('Done with task');
+          const end = performance.now();
+          console.log(`Execution time: ${(end - start) * 1000} s`);
           allSolutions.unshift(currentTask);
           wsServer.clients.forEach((client) => {
+            sendObj(client, 'time', end - start);
             sendObj(client, 'solutions', allSolutions);
           });
           if (allTasksQueue.length > 0) {
             finishedSubtasks = 0;
             currentTask = allTasksQueue.shift();
             fileWeights = currentTask.weights;
+            start = performance.now();
             wsServer.clients.forEach((client) => {
               sendProblem(client);
               sendObj(client, 'queue', allTasksQueue);
@@ -123,6 +128,7 @@ app.post('/server-weights', (req, res) => {
         fileWeights = newWeights;
         finishedSubtasks = 0;
         currentTask = new Task(fileWeights.length, fileWeights, fileName);
+        start = performance.now();
         wsServer.clients.forEach((client) => {
           sendProblem(client);
         });
