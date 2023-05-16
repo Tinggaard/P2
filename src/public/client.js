@@ -87,6 +87,9 @@ function addWebSocketEventListeners() {
         selector.innerHTML = `Clients connected: ${data.data}`;
         break;
       // do nothing
+      case 'time':
+        console.log(`Execution time: ${(data.data) / 1000} s`);
+        break;
       default:
         break;
     }
