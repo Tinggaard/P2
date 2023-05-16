@@ -40,9 +40,6 @@ function Obj(type, data) {
 async function subtaskHandler(data, weights, webSocket) {
   await (calcRoute(data, weights))
     .then((result) => {
-      const selector = document.querySelector('#calculation');
-      selector.innerHTML = `Calculation received: ${data}, final calculation: ${result.route}`;
-
       const resultObj = new Obj('result', result);
       webSocket.send(JSON.stringify(resultObj));
     })
