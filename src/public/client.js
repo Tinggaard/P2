@@ -6,7 +6,7 @@ let rdyButton;
 let weights;
 let correctInput = false;
 let totalSubtasks;
-let subtaskCounter = 0;
+let yourContribution = 0;
 
 function createTooltip(weightsArray, nodeCount) {
   let weightsString = 'Weights \n ';
@@ -19,12 +19,12 @@ function createTooltip(weightsArray, nodeCount) {
   return weightsString;
 }
 
-function updateProgress(yourContribution) {
-  const taskPercentage = (yourContribution / totalSubtasks) * 100;
+function updateProgress(taskProgress) {
+  const taskPercentage = (taskProgress / totalSubtasks) * 100;
   let selector = document.querySelector('#progressText');
-  selector.innerHTML = `${yourContribution} / ${totalSubtasks}`;
+  selector.innerHTML = `${taskProgress} / ${totalSubtasks}`;
   selector = document.querySelector('#yourContributionText');
-  selector.innerHTML = `Your Contribution: ${subtaskCounter} |  Total: ${(Math.floor(taskPercentage))}%`;
+  selector.innerHTML = `Your Contribution: ${yourContribution} |  Total: ${(Math.floor(taskPercentage))}%`;
 
   // Update progress bar
   selector = document.querySelector('#progressBar');
@@ -32,9 +32,9 @@ function updateProgress(yourContribution) {
 
   // Display how much the single user has contributed
   selector = document.querySelector('#progressBarSingle');
-  selector.style.flex = `${subtaskCounter}`;
+  selector.style.flex = `${yourContribution}`;
   selector = document.querySelector('#progressBarTotal');
-  selector.style.flex = `${yourContribution - subtaskCounter}`;
+  selector.style.flex = `${taskProgress - yourContribution}`;
 }
 
 function addWebSocketEventListeners() {
@@ -47,13 +47,14 @@ function addWebSocketEventListeners() {
     switch (data.type) {
       case 'calc':
         await subtaskHandler(data.data, weights, websocket);
-        subtaskCounter++;
+        yourContribution++;
         break;
       case 'weights':
+        yourContribution = 0; // Reset subtask counter when new task is received
         weights = data.data;
         break;
       case 'progress':
-        updateProgress(data.data);
+        updateProgress(data.data, yourContribution);
         break;
       case 'totalSubtasks':
         totalSubtasks = data.data;
