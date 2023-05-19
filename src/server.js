@@ -147,15 +147,6 @@ app.post('/server-weights', (req, res) => {
   });
 });
 
-// this checks if there are weights on the server
-app.get('/weights', (req, res) => {
-  // This checks if fileweights is empty. Should maybe be changed to objects.
-  // this may cause problems later
-  if (fileWeights != null) {
-    res.json(true);
-  }
-});
-
 // Send the total progress each second
 setInterval(() => {
   wsServer.clients.forEach((client) => {

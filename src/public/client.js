@@ -97,39 +97,21 @@ function addWebSocketEventListeners() {
   };
 }
 
-function serverWeightCheck() {
-  return fetch('/weights')
-    .then((response) => response.json())
-    .then((responseData) => {
-      if (responseData === true) {
-        return true;
-      }
-      return false;
-    })
-    .catch((error) => {
-      console.error(error);
-      return false;
-    });
-}
-
 function rdySender() {
-  const weightCheck = serverWeightCheck();
-  if (weightCheck) {
-    if (rdyButton.value === 'Connect') {
-      document.querySelector('#yourContributionText').style.display = 'none';
-      document.querySelector('#clientCounter').style.display = 'block';
-      websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
-      rdyButton.value = 'Disconnect';
-      // Add WebSocket event listeners when connecting
-      addWebSocketEventListeners();
-    } else {
-      websocket.close();
-      rdyButton.value = 'Connect';
-      document.querySelector('#clientCounter').style.display = 'none';
-      // sets a timeout for disconnect to let websocket close properly
-      setTimeout(() => {
-      }, 500);
-    }
+  if (rdyButton.value === 'Connect') {
+    document.querySelector('#yourContributionText').style.display = 'none';
+    document.querySelector('#clientCounter').style.display = 'block';
+    websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
+    rdyButton.value = 'Disconnect';
+    // Add WebSocket event listeners when connecting
+    addWebSocketEventListeners();
+  } else {
+    websocket.close();
+    rdyButton.value = 'Connect';
+    document.querySelector('#clientCounter').style.display = 'none';
+    // sets a timeout for disconnect to let websocket close properly
+    setTimeout(() => {
+    }, 500);
   }
 }
 
