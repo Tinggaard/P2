@@ -41,7 +41,6 @@ function addWebSocketEventListeners() {
   websocket.onmessage = async (event) => {
     const data = JSON.parse(event.data);
     let selector;
-    console.log(data);
     // determine type of data
     switch (data.type) {
       case 'calc':
