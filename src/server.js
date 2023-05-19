@@ -22,7 +22,8 @@ const appServer = app.use(express.static(path.join(dirname, 'public')))
 
 function sendProblem(webSocket) {
   webSocket.send(JSON.stringify(new Obj('weights', currentTask.weights)));
-  webSocket.send(JSON.stringify(currentTask.subtaskAmount));
+  sendObj(webSocket, 'totalSubtasks', currentTask.subtaskAmount);
+  // webSocket.send(JSON.stringify(currentTask.subtaskAmount));
   if (currentTask.iterator) {
     problem = currentTask.iterator.next();
   }
@@ -66,7 +67,7 @@ wsServer.on('connection', (webSocket) => {
           sendObj(webSocket, 'calc', problem.value);
         }
         // If the entire task is completed output the shortest path in the HTML file.
-        if (finishedSubtasks === currentTask.subtaskAmount.data) {
+        if (finishedSubtasks === currentTask.subtaskAmount) {
           console.log('Done with task');
           const end = performance.now();
           console.log(`Execution time: ${(end - start) * 1000} s`);

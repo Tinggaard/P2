@@ -29,14 +29,13 @@ class Task {
     } else {
       this.fixedPathLength = 2;
     }
-    this.totalSubtasks = this.calcTotalSubtasks();
     this.currCombination = this.nodes.slice(0, this.fixedPathLength); // init combination
     this.currPermutation = this.currCombination.slice(); // copy of the above
     this.unfinished = []; // array of unfinished task from DC'ed clients
     this.shortestPath = []; // permutation of shortest path
     this.shortestSum = Infinity; // sum of above permutation
     this.iterator = this.getNextCombination();
-    this.subtaskAmount = new Obj('totalSubtasks', (factorial(weights.length) / factorial(weights.length - this.fixedPathLength)));
+    this.subtaskAmount = this.calcTotalSubtasks();
   }
 
   calcTotalSubtasks() {
