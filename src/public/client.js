@@ -1,13 +1,12 @@
 import { subtaskHandler } from './provider.js';
 
-// first contact
 let websocket;
 let rdyButton;
 let weights;
-let correctInput = false;
 let totalSubtasks;
 let yourContribution = 0;
 
+// Function that generate the string containing weights for the tooltip
 function createTooltip(weightsArray, nodeCount) {
   let weightsString = 'Weights \n ';
   for (let i = 0; i < weightsArray.length; i++) {
@@ -87,7 +86,6 @@ function addWebSocketEventListeners() {
         selector = document.querySelector('#clientCounter');
         selector.innerHTML = `Clients connected: ${data.data}`;
         break;
-      // do nothing
       case 'time':
         console.log(`Execution time: ${(data.data) / 1000} s`);
         break;
@@ -165,24 +163,23 @@ function fileUpdate(file) {
   }
 }
 
+// Check if the filetype of the uploaded file is .json
 function fileChecker(file) {
   const fileName = file.files[0].name;
   if (fileName.endsWith('.json')) {
-    correctInput = true;
-  } else {
-    // eslint-disable-next-line no-alert
-    alert('Please select a json file');
+    return true;
   }
+  // eslint-disable-next-line no-alert
+  alert('Please select a json file');
+  return false;
 }
 
 // Add event listener to the file input element
 const fileInputElement = document.getElementById('fileInput');
 fileInputElement.addEventListener('change', () => {
-  fileChecker(fileInputElement);
-  if (correctInput) {
+  if (fileChecker(fileInputElement)) {
     fileUpdate(fileInputElement);
   }
-  correctInput = false; // reset the stuff :)
 });
 
 // Change text and color of progressbar when hovering with the mouse

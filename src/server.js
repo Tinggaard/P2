@@ -23,11 +23,10 @@ const appServer = app.use(express.static(path.join(dirname, 'public')))
 function sendProblem(webSocket) {
   webSocket.send(JSON.stringify(new Obj('weights', currentTask.weights)));
   sendObj(webSocket, 'totalSubtasks', currentTask.subtaskAmount);
-  // webSocket.send(JSON.stringify(currentTask.subtaskAmount));
   if (currentTask.iterator) {
     problem = currentTask.iterator.next();
   }
-  // tjekker om problemet findes
+  // Send first subtask if there are subtasks availible
   if (problem && !problem.done) {
     sendObj(webSocket, 'calc', problem.value);
   }
@@ -49,7 +48,7 @@ wsServer.on('connection', (webSocket) => {
   sendObj(webSocket, 'queue', allTasksQueue);
   sendObj(webSocket, 'solutions', allSolutions);
 
-  // log messages we get in
+  // Handle messages we get in
   webSocket.on('message', (message) => {
     // determine type of data
     const data = JSON.parse(message);
@@ -62,7 +61,7 @@ wsServer.on('connection', (webSocket) => {
           currentTask.shortestPath = data.data.route.slice();
           currentTask.shortestSum = data.data.routeLength;
         }
-        problem = currentTask.iterator.next(); // send new problem
+        problem = currentTask.iterator.next(); // Send new problem
         if (problem && !problem.done) {
           sendObj(webSocket, 'calc', problem.value);
         }
@@ -76,6 +75,8 @@ wsServer.on('connection', (webSocket) => {
             sendObj(client, 'time', end - start);
             sendObj(client, 'solutions', allSolutions);
           });
+
+          // If there are tasks in the queue, a task is dequeued and it becomes the current task
           if (allTasksQueue.length > 0) {
             finishedSubtasks = 0;
             currentTask = allTasksQueue.shift();
@@ -90,14 +91,14 @@ wsServer.on('connection', (webSocket) => {
           }
         }
         break;
-      // do nothing
+
       default:
         break;
     }
   });
-  // Print to console on client disconnected
+
   webSocket.on('close', () => {
-    if (problem && !problem.done) { // tjekker om problemet findes
+    if (problem && !problem.done) { // Check if the grid is currently doing a task
       currentTask.unfinished.push(problem.value); // add permutation back to task class
     }
     // Print and number of clients connected
@@ -119,10 +120,8 @@ app.post('/server-weights', (req, res) => {
     // When a file is uploaded this runs
     try {
       console.log('file uploaded');
-      // name of task
-      const fileName = JSON.parse(body).name;
-      // store new weights
-      const newWeights = JSON.parse(body).weights;
+      const fileName = JSON.parse(body).name; // Name of task
+      const newWeights = JSON.parse(body).weights; // Store new weights
       // Creates the main task
       if (currentTask === undefined) {
       // Creating an object of the weights to be send to the client
