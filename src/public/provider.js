@@ -12,6 +12,7 @@ function calcRouteLength(weights, route) {
 
 function calcRoute(staticRoute, weights) {
   return new Promise((resolve) => {
+    // Call Webassembly function
     const arr = bruteForce(staticRoute, weights.flat(), weights.length);
     // New array with starting point and the static route
     const subtaskResult = { route: [0, staticRoute].flat(), routeLength: -1 };
