@@ -34,5 +34,5 @@ test('Test total subtask count', () => {
     i++;
   }
 
-  expect(i).toBe(task.totalSubtasks);
+  expect(i).toBe(task.subtaskAmount);
 });
