@@ -1,4 +1,4 @@
-import { subtaskHandler } from './provider.js';
+import { subtaskHandler, sendObj } from './provider.js';
 
 let websocket;
 let rdyButton;
@@ -50,6 +50,7 @@ function addWebSocketEventListeners() {
       case 'weights':
         yourContribution = 0; // Reset subtask counter when new task is received
         weights = data.data;
+        sendObj(websocket, 'subtaskRequest', null);
         break;
       case 'progress':
         updateProgress(data.data, yourContribution);

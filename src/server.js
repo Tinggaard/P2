@@ -3,7 +3,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
-import { Obj, Task, sendObj } from './control.js';
+import { Task, sendObj } from './control.js';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -12,22 +12,16 @@ let finishedSubtasks = 0;
 let currentTask;
 const allTasksQueue = [];
 const allSolutions = [];
-let problem;
+
 // Express server implementation
 let start;
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
 
-function sendProblem(webSocket) {
-  webSocket.send(JSON.stringify(new Obj('weights', currentTask.weights)));
+function sendWeights(webSocket) {
+  sendObj(webSocket, 'weights', currentTask.weights);
   sendObj(webSocket, 'totalSubtasks', currentTask.subtaskAmount);
-  if (currentTask.iterator) {
-    problem = currentTask.iterator.next();
-    if (!problem.done) { // Send first subtask if there are subtasks availible
-      sendObj(webSocket, 'calc', problem.value);
-    }
-  }
 }
 
 // Create a new instance of ws server
@@ -38,8 +32,10 @@ wsServer.on('connection', (webSocket) => {
     sendObj(client, 'clientCounter', wsServer.clients.size);
   });
 
+  let subtaskIterator;
+
   if (currentTask !== undefined) {
-    sendProblem(webSocket);
+    sendWeights(webSocket);
   }
 
   sendObj(webSocket, 'queue', allTasksQueue);
@@ -58,9 +54,10 @@ wsServer.on('connection', (webSocket) => {
           currentTask.shortestPath = data.data.route.slice();
           currentTask.shortestSum = data.data.routeLength;
         }
-        problem = currentTask.iterator.next(); // Send new problem
-        if (problem && !problem.done) {
-          sendObj(webSocket, 'calc', problem.value);
+        subtaskIterator = currentTask.iterator.next(); // Send new problem
+        if (subtaskIterator && !subtaskIterator.done) {
+          // currentSubtask = subtaskIterator.value;
+          sendObj(webSocket, 'calc', subtaskIterator.value);
         }
         // If the entire task is completed output the shortest path in the HTML file.
         if (finishedSubtasks === currentTask.subtaskAmount) {
@@ -77,12 +74,20 @@ wsServer.on('connection', (webSocket) => {
             currentTask = allTasksQueue.shift();
             start = performance.now();
             wsServer.clients.forEach((client) => {
-              sendProblem(client);
+              sendWeights(client);
               sendObj(client, 'queue', allTasksQueue);
             });
           } else {
             currentTask = undefined;
           }
+        }
+        break;
+
+      case 'subtaskRequest':
+        subtaskIterator = currentTask.iterator.next(); // Send new problem
+        if (subtaskIterator && !subtaskIterator.done) {
+          // currentSubtask = subtaskIterator.value;
+          sendObj(webSocket, 'calc', subtaskIterator.value);
         }
         break;
 
@@ -92,10 +97,11 @@ wsServer.on('connection', (webSocket) => {
   });
 
   webSocket.on('close', () => {
-    if (problem && !problem.done) { // Check if the grid is currently doing a task
-      currentTask.unfinished.push(problem.value); // add permutation back to task class
+    // Check if the grid is currently doing a task
+    if (subtaskIterator && !subtaskIterator.done) {
+      currentTask.unfinished.push(subtaskIterator.value); // add permutation back to task class
     }
-    // Print and number of clients connected
+    // Print number of clients connected
     wsServer.clients.forEach((client) => {
       sendObj(client, 'clientCounter', wsServer.clients.size);
     });
@@ -105,23 +111,27 @@ wsServer.on('connection', (webSocket) => {
 // Where the uploaded JSON file with weights is posted to
 app.post('/server-weights', (req, res) => {
   let body = '';
+
   // Stringifies and concatenates the received data from the uploaded JSON file
   req.on('data', (chunk) => {
     body += chunk.toString();
   });
+
   req.on('end', () => {
     // When a file is uploaded this runs
     try {
       const fileName = JSON.parse(body).name; // Name of task
       const newWeights = JSON.parse(body).weights; // Store new weights
+
       // Creates the main task
       if (currentTask === undefined) {
       // Creating an object of the weights to be send to the client
         finishedSubtasks = 0;
         currentTask = new Task(newWeights.length, newWeights, fileName);
         start = performance.now();
+
         wsServer.clients.forEach((client) => {
-          sendProblem(client);
+          sendWeights(client);
         });
       } else {
         allTasksQueue.push(new Task(newWeights.length, newWeights, fileName));
@@ -129,6 +139,7 @@ app.post('/server-weights', (req, res) => {
           sendObj(client, 'queue', allTasksQueue);
         });
       }
+
       res.sendStatus(200);
       // Starts creating subtasks/static routes from the main task
     } catch (err) {

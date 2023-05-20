@@ -92,5 +92,5 @@ class Task {
 }
 
 export {
-  Obj, Task, sendObj,
+  Task, sendObj,
 };

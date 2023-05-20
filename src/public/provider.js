@@ -37,14 +37,18 @@ function Obj(type, data) {
   this.data = data;
 }
 
+function sendObj(webSocket, type, data) {
+  const obj = new Obj(type, data);
+  webSocket.send(JSON.stringify(obj));
+}
+
 // Function for printing result on website and sending result back to server
 async function subtaskHandler(data, weights, webSocket) {
   await (calcRoute(data, weights))
     .then((result) => {
-      const resultObj = new Obj('result', result);
-      webSocket.send(JSON.stringify(resultObj));
+      sendObj(webSocket, 'result', result);
     })
     .catch((err) => { console.error(err); });
 }
 
-export { Obj, subtaskHandler };
+export { Obj, sendObj, subtaskHandler };
