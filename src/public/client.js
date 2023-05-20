@@ -1,10 +1,6 @@
 import { subtaskHandler, sendObj } from './provider.js';
 
-let websocket;
-let rdyButton;
-let weights;
-let totalSubtasks;
-let yourContribution = 0;
+let webSocket;
 
 // Function that generate the string containing weights for the tooltip
 function createTooltip(weightsArray, nodeCount) {
@@ -18,7 +14,7 @@ function createTooltip(weightsArray, nodeCount) {
   return weightsString;
 }
 
-function updateProgress(taskProgress) {
+function updateProgress(taskProgress, yourContribution, totalSubtasks) {
   const taskPercentage = (taskProgress / totalSubtasks) * 100;
   let selector = document.querySelector('#progressText');
   selector.innerHTML = `${taskProgress} / ${totalSubtasks}`;
@@ -38,26 +34,33 @@ function updateProgress(taskProgress) {
 
 function addWebSocketEventListeners() {
   // when we get a message
-  websocket.onmessage = async (event) => {
+  let yourContribution = 0;
+  let totalSubtasks;
+  let weights;
+  webSocket.onmessage = async (event) => {
     const data = JSON.parse(event.data);
     let selector;
     // determine type of data
     switch (data.type) {
       case 'calc':
-        await subtaskHandler(data.data, weights, websocket);
+        await subtaskHandler(data.data, weights, webSocket);
         yourContribution++;
         break;
+
       case 'weights':
         yourContribution = 0; // Reset subtask counter when new task is received
         weights = data.data;
-        sendObj(websocket, 'subtaskRequest', null);
+        sendObj(webSocket, 'subtaskRequest', null);
         break;
+
       case 'progress':
-        updateProgress(data.data, yourContribution);
+        updateProgress(data.data, yourContribution, totalSubtasks);
         break;
+
       case 'totalSubtasks':
         totalSubtasks = data.data;
         break;
+
       case 'solutions':
         selector = document.querySelector('#solutions');
         selector.innerHTML = '';
@@ -70,6 +73,7 @@ function addWebSocketEventListeners() {
           selector.appendChild(p);
         });
         break;
+
       case 'queue':
         selector = document.querySelector('#queue');
         selector.innerHTML = '';
@@ -82,46 +86,44 @@ function addWebSocketEventListeners() {
           selector.appendChild(p);
         });
         break;
+
       case 'clientCounter':
         selector = document.querySelector('#clientCounter');
         selector.innerHTML = `Clients connected: ${data.data}`;
         break;
-      case 'time':
-        console.log(`Execution time: ${(data.data) / 1000} s`);
-        break;
+
       default:
         break;
     }
   };
 }
 
-function rdySender() {
-  if (rdyButton.value === 'Connect') {
+const connectButton = document.querySelector('#connecterBtn');
+connectButton.addEventListener('click', () => {
+  if (connectButton.value === 'Connect') {
     document.querySelector('#yourContributionText').style.display = 'none';
     document.querySelector('#clientCounter').style.display = 'block';
-    websocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
-    rdyButton.value = 'Disconnect';
+    webSocket = new WebSocket(document.location.origin.replace(/^http/, 'ws'));
+
+    connectButton.value = 'Disconnect';
     // Add WebSocket event listeners when connecting
     addWebSocketEventListeners();
   } else {
-    websocket.close();
-    rdyButton.value = 'Connect';
+    webSocket.close();
+    connectButton.value = 'Connect';
     document.querySelector('#clientCounter').style.display = 'none';
+
     // sets a timeout for disconnect to let websocket close properly
     setTimeout(() => {
     }, 500);
   }
-}
-
-rdyButton = document.querySelector('#connecterBtn');
-rdyButton.addEventListener('click', () => {
-  rdySender();
 });
 
 // file upload
 function fileSender(file, fileName) {
   if (file) { // Check if file exists
     const reader = new FileReader();
+    reader.readAsText(file);
     reader.onload = (event) => {
       const taskData = {
         name: fileName,
@@ -134,8 +136,7 @@ function fileSender(file, fileName) {
         },
         body: JSON.stringify(taskData),
       })
-        .then((response) => {
-          response.json();
+        .then(() => {
           const elem = document.querySelector('#msg');
           elem.classList.add('notification'); // add class describing animation
           elem.style.animation = 'none'; // trigger reflow
@@ -145,7 +146,6 @@ function fileSender(file, fileName) {
         })
         .catch((error) => console.error(error));
     };
-    reader.readAsText(file);
   } else {
     console.error('File not found.');
   }
@@ -153,14 +153,9 @@ function fileSender(file, fileName) {
 
 // Function to update the label of the file input element
 function fileUpdate(file) {
-  const fileInputLabel = document.querySelector('#fileInputLabel');
-  if (file.files.length > 0) {
-    const fileName = file.files[0].name;
-    fileInputLabel.textContent = fileName;
-    fileSender(file.files[0], fileName); // Call fileSender with the selected file
-  } else {
-    fileInputLabel.textContent = 'Upload';
-  }
+  const fileName = file.name;
+  document.querySelector('#fileInputLabel').textContent = fileName;
+  fileSender(file, fileName); // Call fileSender with the selected file
 }
 
 // Check if the filetype of the uploaded file is .json
@@ -178,7 +173,7 @@ function fileChecker(file) {
 const fileInputElement = document.getElementById('fileInput');
 fileInputElement.addEventListener('change', () => {
   if (fileChecker(fileInputElement)) {
-    fileUpdate(fileInputElement);
+    fileUpdate(fileInputElement.files[0]);
   }
 });
 
@@ -193,5 +188,5 @@ document.querySelector('#progressBar').addEventListener('mouseover', () => {
 document.querySelector('#progressBar').addEventListener('mouseleave', () => {
   document.querySelector('#progressText').style.display = 'block';
   document.querySelector('#yourContributionText').style.display = 'none';
-  document.querySelector('#progressBarSingle').style.background = '#2BAE66FF';
+  document.querySelector('#progressBarSingle').style.background = '#2BAE66';
 });

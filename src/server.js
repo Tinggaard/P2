@@ -7,6 +7,7 @@ import { Task, sendObj } from './control.js';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+
 // initialization of variables
 let finishedSubtasks = 0;
 let currentTask;
@@ -14,7 +15,6 @@ const allTasksQueue = [];
 const allSolutions = [];
 
 // Express server implementation
-let start;
 const app = express();
 const appServer = app.use(express.static(path.join(dirname, 'public')))
   .listen(3000, () => console.log('Server running at http://localhost:3000'));
@@ -61,10 +61,8 @@ wsServer.on('connection', (webSocket) => {
         }
         // If the entire task is completed output the shortest path in the HTML file.
         if (finishedSubtasks === currentTask.subtaskAmount) {
-          const end = performance.now();
           allSolutions.unshift(currentTask);
           wsServer.clients.forEach((client) => {
-            sendObj(client, 'time', end - start);
             sendObj(client, 'solutions', allSolutions);
           });
 
@@ -72,7 +70,6 @@ wsServer.on('connection', (webSocket) => {
           if (allTasksQueue.length > 0) {
             finishedSubtasks = 0;
             currentTask = allTasksQueue.shift();
-            start = performance.now();
             wsServer.clients.forEach((client) => {
               sendWeights(client);
               sendObj(client, 'queue', allTasksQueue);
@@ -128,7 +125,6 @@ app.post('/server-weights', (req, res) => {
       // Creating an object of the weights to be send to the client
         finishedSubtasks = 0;
         currentTask = new Task(newWeights.length, newWeights, fileName);
-        start = performance.now();
 
         wsServer.clients.forEach((client) => {
           sendWeights(client);

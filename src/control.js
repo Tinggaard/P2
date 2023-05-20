@@ -1,8 +1,3 @@
-function Obj(type, data) {
-  this.type = type;
-  this.data = data;
-}
-
 function factorial(num) {
   let result = 1;
   for (let i = 2; i < num; i++) {
@@ -12,7 +7,10 @@ function factorial(num) {
 }
 
 function sendObj(webSocket, type, data) {
-  const obj = new Obj(type, data);
+  const obj = {
+    type,
+    data,
+  };
   webSocket.send(JSON.stringify(obj));
 }
 
