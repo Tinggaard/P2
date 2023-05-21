@@ -1,6 +1,6 @@
 import init, { bruteForce } from './wasm/tsp.js';
 
-init().then();
+init();
 
 function calcRouteLength(weights, route) {
   let routeLength = 0;
@@ -12,6 +12,7 @@ function calcRouteLength(weights, route) {
 
 function calcRoute(staticRoute, weights) {
   return new Promise((resolve) => {
+    // Call Webassembly function
     const arr = bruteForce(staticRoute, weights.flat(), weights.length);
     // New array with starting point and the static route
     const subtaskResult = { route: [0, staticRoute].flat(), routeLength: -1 };
@@ -30,20 +31,21 @@ function calcRoute(staticRoute, weights) {
   });
 }
 
-// Gives data a type to send data between client and server
-function Obj(type, data) {
-  this.type = type;
-  this.data = data;
+function sendObj(webSocket, type, data) {
+  const obj = {
+    type,
+    data,
+  };
+  webSocket.send(JSON.stringify(obj));
 }
 
 // Function for printing result on website and sending result back to server
 async function subtaskHandler(data, weights, webSocket) {
   await (calcRoute(data, weights))
     .then((result) => {
-      const resultObj = new Obj('result', result);
-      webSocket.send(JSON.stringify(resultObj));
+      sendObj(webSocket, 'result', result);
     })
     .catch((err) => { console.error(err); });
 }
 
-export { Obj, subtaskHandler };
+export { sendObj, subtaskHandler };
