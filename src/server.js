@@ -13,6 +13,7 @@ let finishedSubtasks = 0;
 let currentTask;
 const allTasksQueue = [];
 const allSolutions = [];
+let start;
 
 // Express server implementation
 const app = express();
@@ -62,14 +63,17 @@ wsServer.on('connection', (webSocket) => {
         // If the entire task is completed output the shortest path in the HTML file.
         if (finishedSubtasks === currentTask.subtaskAmount) {
           allSolutions.unshift(currentTask);
+          const end = performance.now();
           wsServer.clients.forEach((client) => {
             sendObj(client, 'solutions', allSolutions);
+            sendObj(client, 'time', end - start);
           });
 
           // If there are tasks in the queue, a task is dequeued and it becomes the current task
           if (allTasksQueue.length > 0) {
             finishedSubtasks = 0;
             currentTask = allTasksQueue.shift();
+            start = performance.now();
             wsServer.clients.forEach((client) => {
               sendWeights(client);
               sendObj(client, 'queue', allTasksQueue);
@@ -125,7 +129,7 @@ app.post('/server-weights', (req, res) => {
       // Creating an object of the weights to be send to the client
         finishedSubtasks = 0;
         currentTask = new Task(newWeights.length, newWeights, fileName);
-
+        start = performance.now();
         wsServer.clients.forEach((client) => {
           sendWeights(client);
         });
