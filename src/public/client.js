@@ -79,7 +79,7 @@ function addWebSocketEventListeners() {
         selector.innerHTML = '';
         data.data.forEach((queue, index) => {
           const p = document.createElement('p');
-          const weightsString = createTooltip(weights, queue.nodeCount);
+          const weightsString = createTooltip(queue.weights, queue.nodeCount);
           p.innerHTML += `${index + 1}. ${queue.name} <br>`;
           p.classList.add('task');
           p.setAttribute('data-tooltip', `${weightsString}`);
